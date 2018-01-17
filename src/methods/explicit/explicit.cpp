@@ -16,19 +16,12 @@ Explicit::Explicit(Problem problem) : Method(problem) {
 * public method - compute a solution using explicit procedures
 */
 void Explicit::compute_solution() {
-	FTCS ftcs(problem);
 	Vector current_step, previous_step, next_step;
 	unsigned int t_size = problem.get_tsize(), x_size = problem.get_xsize();
 	double delta_t = problem.get_deltat(), time;
 	current_step = next_step = Vector(x_size + 1);
 	// iterate through the several time steps
 	for (size_t i = 1; i <= t_size; i++) {
-		// if is the first iteration then the previous step is known (initial conditions)
-		// and the current-step may be obtained with the forward in time and central in space method, which only requires the previous step to calculate the current time step solution
-		if (i == 1) {
-			previous_step = problem.get_first_row();
-			current_step = ftcs.build_iteration(Vector(0), previous_step);
-		}
 
 		// use the current and previous time steps to calculate the next time step solution
 		next_step = build_iteration(current_step, previous_step);

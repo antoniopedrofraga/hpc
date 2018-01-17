@@ -62,8 +62,8 @@ void IOManager::export_outputs(Method * analytical, std::vector<Method*> methods
 	}
 	std::vector<Method*> error_vector(methods.begin() + 1, methods.begin() + 4);
 	error_tables(output_name, error_vector);
-	plot_default_deltat_times();
-	plot_laasonen_times();
+	//plot_default_deltat_times();
+	//plot_laasonen_times();
 }
 
 /*
