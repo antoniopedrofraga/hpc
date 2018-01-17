@@ -22,7 +22,6 @@ void Analytical::compute_solution() {
 
 	// iterates through the solution columns
 	for (unsigned int t = 0; t < NUMBER_TIME_STEPS; t++) {
-
 		// iterates through the solution rows
 		for (unsigned int x = 0; x <= x_size; x++) {
 			double sum = 0.0;

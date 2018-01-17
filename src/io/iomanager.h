@@ -34,17 +34,6 @@ private:
 	void plot_solutions(std::string output_name, Method * analytical, Method * method);
 
 	/**
-	* Exports a plot with Laasonen delta t variation computational times
-	*/
-	void plot_laasonen_times();
-
-
-	/**
-	* Exports a plot with four methods computational times
-	*/
-	void plot_default_deltat_times();
-
-	/**
 	* Exports a plot that compares the norms of each solution
 	* @param string output_name File name to be exported
 	* @param vector<Method*> vector of methods to plot the second norm

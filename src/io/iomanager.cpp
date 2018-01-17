@@ -42,7 +42,7 @@ bool IOManager::create_output_dir() {
 */
 
 void IOManager::export_outputs(Method * analytical, std::vector<Method*> methods) {
-	if (!create_output_dir()) return;
+	//if (!create_output_dir()) return;
 	std::cout << "Exporting outputs to " << boost::filesystem::canonical(output_path, ".") << std::endl;
 	std::string name, output_name, deltat_string;
 	for (unsigned int index = 0; index < methods.size(); index++) {
@@ -60,12 +60,9 @@ void IOManager::export_outputs(Method * analytical, std::vector<Method*> methods
 		plot_solutions(output_name, analytical, methods[index]);
 		std::cout << "Finished!" << std::endl;
 	}
-	std::vector<Method*> error_vector(methods.begin() + 1, methods.begin() + 4);
-	error_tables(output_name, error_vector);
-	//plot_default_deltat_times();
-	//plot_laasonen_times();
+	//std::vector<Method*> error_vector(methods.begin() + 1, methods.begin() + 4);
+	//error_tables(output_name, error_vector);
 }
-
 /*
 * private plot method - Exports a plot chart which compares the analytical solution with a given solution
 */
@@ -92,32 +89,6 @@ void IOManager::plot_solutions(std::string output_name, Method * analytical, Met
 		gp << "plot" << gp.file1d(analytical_matrix[index]) << "with lines title \"Analytical\" lw 2 lt rgb \"red\","
 			<< gp.file1d(method_matrix[index]) << "with points title \"" << name << "\" pt 17 ps 1 lw 1" << std::endl;
 	}
-}
-
-/*
-* private plot method - Exports a plot chart with laasonen solutions computational times
-*/
-
-void IOManager::plot_laasonen_times() {
-	// Object to export plots
-	Gnuplot gp;
-
-	gp << "set tics scale 0; set border 3; set style line 1 lc rgb '#0060ad' lt 1 lw 2 pt 7 pi -1 ps 1.5; set clip two; set ylabel \"Computational Time [ms]\";set xlabel \"Δ t [h]\"; set term png; set xtics (\"0.01\" 0, \"0.025\" 1, \"0.05\" 2, \"0.1\" 3)\n";
-	gp << "set output \"" << output_path << "/laasonen_times.png\";\n";
-	gp << "plot" << gp.file1d(laasonen_times) << " notitle with linespoint ls 1" << std::endl;
-}
-
-/*
-* private plot method - Exports a plot chart with solutions computational times
-*/
-
-void IOManager::plot_default_deltat_times() {
-	// Object to export plots
-	Gnuplot gp;
-
-	gp << "set tics scale 0; set border 3; set style line 1 lc rgb '#0060ad' lt 1 lw 2 pt 7 pi -1 ps 1.5; set clip two; set ylabel \"Computational Time [ms]\";set xlabel \"Δ t [h]\"; set term png; set xtics (\"Dufort-Frankel\" 0, \"Crank-Nicholson\" 1, \"Laasonen\" 2)\n";
-	gp << "set output \"" << output_path << "/default_deltat_times.png\";\n";
-	gp << "plot" << gp.file1d(default_deltat_times) << " notitle with linespoint ls 1" << std::endl;
 }
 
 /*

@@ -1,10 +1,10 @@
 all: ./src/*.cpp
-	g++ -std=c++14 -W ./src/*.cpp ./src/*/*.cpp ./src/*/*/*.cpp -o ./bin/assignment -lboost_iostreams -lboost_system -lboost_filesystem
+	mpicxx -std=c++14 -lpthread -W ./src/*.cpp ./src/*/*.cpp ./src/*/*/*.cpp -o ./bin/assignment -lboost_iostreams -lboost_system -lboost_filesystem
 install:
 	sudo apt-get install libboost-iostreams-dev libboost-system-dev libboost-filesystem-dev
 run:
 	make all
-	./bin/assignment
+	mpiexec -np 1 ./bin/assignment
 export:
 	if [ -d ../outputs ]; then \
 	  	make clean; \
