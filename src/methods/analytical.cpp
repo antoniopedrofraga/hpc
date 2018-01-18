@@ -14,16 +14,19 @@ Analytical::Analytical(Problem problem)
 /*
  * Computes the analytical solution 
  */
-void Analytical::compute_solution() {
+void Analytical::compute_solution(size_t lower, size_t upper) {
 	Matrix * solution = problem.get_solution();
 	Vector t_values = problem.get_tvalues();
 	Vector x_values = problem.get_xvalues();
-	unsigned int x_size = problem.get_xsize();
+	vector<vector<double>> sub_matrix;
+
+	std::cout << " : Lower(" << lower << ") Upper(" << upper << ")" << std::endl;
 
 	// iterates through the solution columns
 	for (unsigned int t = 0; t < NUMBER_TIME_STEPS; t++) {
 		// iterates through the solution rows
-		for (unsigned int x = 0; x <= x_size; x++) {
+		vector<double> current_step;
+		for (unsigned int x = lower; x <= upper; x++) {
 			double sum = 0.0;
 			// expansions
 			for (unsigned int m = 1; m <= this->nr_of_expansions; m++) {
@@ -31,8 +34,11 @@ void Analytical::compute_solution() {
 				sum += exp(-DIFUSIVITY * pow(m_double * PI / THICKNESS, 2) * t_values[t]) * (1 - pow(-1, m_double)) / (m_double * PI) * sin(m_double * PI * x_values[x] / THICKNESS);
 			}
 			// assigns the correct value to a position 
-			(*solution)[t][x] = SURFACE_TEMPERATURE + 2.0 * (INITIAL_TEMPERATURE - SURFACE_TEMPERATURE) * sum;
+			current_step.push_back(SURFACE_TEMPERATURE + 2.0 * (INITIAL_TEMPERATURE - SURFACE_TEMPERATURE) * sum);
 		}
+		sub_matrix.push_back(current_step);
 	}
+
+	//mpi_manager->add_sub_matrix(sub_matrix);
 }
 

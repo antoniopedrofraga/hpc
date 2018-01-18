@@ -21,7 +21,7 @@
 * \n-input and oput operation via >> and << operators using keyboard or file
 * \n-basic operations like access via [] operator, assignment and comparision
 */
-class Matrix : private std::vector<std::vector<double> > {
+class Matrix : public std::vector<std::vector<double> > {
 	typedef std::vector<std::vector<double> > vec;
 public:
 	using vec::operator[];  // make the array access operator public within Matrix

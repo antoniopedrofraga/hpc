@@ -23,7 +23,7 @@ or by creating empty vector of a given size,
 * \n-input and oput operation via >> and << operators using keyboard or file
 * \n-basic operations like access via [] operator, assignment and comparision
 */
-class Vector : private std::vector<double> {
+class Vector : public std::vector<double> {
 	typedef std::vector<double> vec;
 public:
 	using vec::operator[];  // elevates the array access operator inherited from std::vector

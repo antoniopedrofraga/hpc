@@ -15,19 +15,18 @@ Explicit::Explicit(Problem problem) : Method(problem) {
 /*
 * public method - compute a solution using explicit procedures
 */
-void Explicit::compute_solution() {
-	Vector current_step, previous_step, next_step;
+void Explicit::compute_solution(size_t lower, size_t upper) {
+	Vector current_step, previous_step;
 	unsigned int t_size = problem.get_tsize(), x_size = problem.get_xsize();
 	double delta_t = problem.get_deltat(), time;
-	current_step = next_step = Vector(x_size + 1);
+	current_step = Vector(x_size + 1);
 	// iterate through the several time steps
 	for (size_t i = 1; i <= t_size; i++) {
 		// if is the first iteration then the previous step is known (initial conditions)
 		if (i == 1) { previous_step = problem.get_first_row(); }
 		// use the current and previous time steps to calculate the next time step solution
-		next_step = build_iteration(current_step, previous_step);
+		current_step = build_iteration({}, previous_step);
 		previous_step = current_step;
-		current_step = next_step;
 		time = delta_t * (double)i;
 		// save solution if time step == 0.1, 0.2, 0.3, 0.4 or 0.5
 		problem.set_time_step(current_step, time);

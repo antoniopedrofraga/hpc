@@ -10,31 +10,38 @@
 	Main file - creates a problem, solving it with the different methods, ending by exporting the results. 
 */
 int main(int argc, char * argv[]) {
-	MPImanager * mpi_manager = new MPImanager();
-	mpi_manager->initialize(&argc, &argv);
 
 	IOManager io_manager;
 	Problem * default_problem = new Problem(DELTA_T, DELTA_X);
+	MPImanager * mpi_manager = new MPImanager(default_problem->get_tsize());
+
 	Analytical * analytical = new Analytical(*default_problem);
 	FTCS * ftcs = new FTCS(*default_problem);
-	Laasonen * laasonen = new Laasonen(*default_problem);
-	CrankNicolson * crank_nicolson = new CrankNicolson(*default_problem);
+	/*Laasonen * laasonen = new Laasonen(*default_problem);
+	CrankNicolson * crank_nicolson = new CrankNicolson(*default_problem);*/
 
-	std::vector<Method*> solutions = {analytical, ftcs, laasonen, crank_nicolson};
+	mpi_manager->initialize(&argc, &argv);
+	size_t lower = mpi_manager->lower_bound(), upper = mpi_manager->upper_bound();
+
+	std::vector<Method*> solutions = {analytical, ftcs/*, laasonen, crank_nicolson*/};
 
 	for (size_t index = 0; index < solutions.size(); index++) {
-		std::cout << "Computing " << solutions[index]->get_name() << std::endl;
+		solutions[index]->compute(lower, upper);
 
-		solutions[index]->compute();
 		if (solutions[index]->get_name() != ANALYTICAL) {
 			solutions[index]->compute_norms(analytical->get_solution());
 		}
 	}
 
-	mpi_manager->finalize();
+	if (mpi_manager->is_root()) {
+		mpi_manager->collect_results(solutions.size());
+		std::vector<Method*> methods(solutions.begin() + 1, solutions.end());
+		io_manager.export_outputs(solutions[0], methods);
+	} else {
+		mpi_manager->send_results();
+	}
 
-	std::vector<Method*> methods(solutions.begin() + 1, solutions.end());
-	io_manager.export_outputs(solutions[0], methods);
+	mpi_manager->finalize();
 
 	return 0;
 }

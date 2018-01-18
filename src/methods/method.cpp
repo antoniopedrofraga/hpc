@@ -12,12 +12,13 @@ Method::Method() {}
 Method::Method(Problem problem) {
 	this->problem = problem;
 }
+
 /*
  * public method - compute a solution keeping track of spent time
  */
-void Method::compute() {
+void Method::compute(size_t lower, size_t upper) {
 	clock_t begin = clock();
-	compute_solution();
+	compute_solution(lower, upper);
 	clock_t end = clock();
 	computational_time = double(end - begin) * 1000 / CLOCKS_PER_SEC;
 }

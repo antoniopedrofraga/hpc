@@ -27,7 +27,7 @@ public:
 	* Normal public method.
 	* compute the solution with specific given rules
 	*/
-	void compute_solution();
+	void compute_solution(size_t lower, size_t upper);
 };
 
 #endif

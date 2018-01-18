@@ -14,7 +14,7 @@ Implicit::Implicit(Problem problem) : Method(problem) {
 /*
 * public normal method - compute a solution using implicit procedures
 */
-void Implicit::compute_solution() {
+void Implicit::compute_solution(size_t lower, size_t upper) {
 	Vector previous_step, current_step, r, t_values = problem.get_tvalues();
 	unsigned int t_size = problem.get_tsize();
 	double delta_t = problem.get_deltat(), time;

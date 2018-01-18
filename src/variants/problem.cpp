@@ -138,3 +138,8 @@ Vector Problem::get_tvalues() {
 Matrix *Problem::get_solution() {
 	return &solution;
 }
+
+void Problem::set_solution(Matrix matrix) {
+	solution = matrix;
+}
+

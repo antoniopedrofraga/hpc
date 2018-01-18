@@ -115,6 +115,8 @@ public:
 	* set the problem initial boundaries.
 	*/
 	void set_initial_conditions();
+
+	void set_solution(Matrix matrix);
 };
 
 #endif

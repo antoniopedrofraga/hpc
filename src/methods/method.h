@@ -2,6 +2,7 @@
 #define METHOD_H
 
 #include "../variants/problem.h" // declare the problem structure
+#include "../mpi/mpimanager.h"
 
 
 /**
@@ -37,6 +38,7 @@ public:
 	* @see Method()
 	*/
 	Method(Problem problem);
+
 
 	// PUBLIC ACCESSOR METHODS
 
@@ -86,7 +88,7 @@ public:
 	* Normal public method.
 	* Keeps track of the time to compute a solution
 	*/
-	void compute();
+	void compute(size_t lower, size_t upper);
 
 	void compute_norms(Matrix analytical_matrix);
 
@@ -96,7 +98,7 @@ public:
 	* A pure virtual member.
 	* compute the solution following the rules of a given method.
 	*/
-	virtual void compute_solution() = 0;
+	virtual void compute_solution(size_t lower, size_t upper) = 0;
 
 
 };
