@@ -16,18 +16,18 @@ int main(int argc, char * argv[]) {
 	MPImanager * mpi_manager = new MPImanager(default_problem->get_xsize() - 1);
 
 	Analytical * analytical = new Analytical(*default_problem);
-	/*FTCS * ftcs = new FTCS(*default_problem);
-	Laasonen * laasonen = new Laasonen(*default_problem);
+	FTCS * ftcs = new FTCS(*default_problem);
+	/*Laasonen * laasonen = new Laasonen(*default_problem);
 	CrankNicolson * crank_nicolson = new CrankNicolson(*default_problem);*/
 
 	mpi_manager->initialize(&argc, &argv);
 	size_t lower = mpi_manager->lower_bound(), upper = mpi_manager->upper_bound();
 
-	std::vector<Method*> solutions = {analytical/*, ftcs, laasonen, crank_nicolson*/};
+	std::vector<Method*> solutions = {analytical, ftcs/*, laasonen, crank_nicolson*/};
 
 	for (size_t index = 0; index < solutions.size(); index++) {
 		std::cout << "Solution: " << index << std::endl;
-		mpi_manager->add_sub_matrix(index, solutions[index]->compute(lower, upper));
+		solutions[index]->compute(mpi_manager, index);
 		std::cout << "Sub matrix calculated, added to mpi_manager." << std::endl;
 
 		/*if (solutions[index]->get_name() != ANALYTICAL) {

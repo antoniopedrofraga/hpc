@@ -14,12 +14,11 @@ Implicit::Implicit(Problem problem) : Method(problem) {
 /*
 * public normal method - compute a solution using implicit procedures
 */
-double ** Implicit::compute_solution(size_t lower, size_t upper) {
+void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 	Vector previous_step, current_step, r, t_values = problem.get_tvalues();
 	unsigned int t_size = problem.get_tsize();
 	double delta_t = problem.get_deltat(), time;
 
-	double ** sub_matrix = NULL;
 	// iterate through the several time steps
 	for (size_t i = 1; i <= t_size; i++) {
 		// if is the first iteration then the previous step is known (initial conditions)
@@ -35,7 +34,6 @@ double ** Implicit::compute_solution(size_t lower, size_t upper) {
 		problem.set_time_step(current_step, time);
 	}
 
-	return sub_matrix;
 }
 
 /*

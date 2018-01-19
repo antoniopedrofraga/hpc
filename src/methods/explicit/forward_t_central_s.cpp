@@ -12,12 +12,38 @@ FTCS::FTCS(Problem problem)
 /*
 * Normal public method - compute the first iteration of explicit methods
 */
-Vector FTCS::build_iteration(Vector current_step, Vector previous_step) {
-	unsigned int size = previous_step.getSize();
-	Vector result(size);
-	result[0] = result[size - 1] = SURFACE_TEMPERATURE;
-	for (unsigned int i = 1; i < size - 1; i++) {
-		result[i] = previous_step[i] + q / 2.0 * (previous_step[i + 1] - 2.0 * previous_step[i] + previous_step[i - 1]);
+double* FTCS::build_iteration(double* current_step, double* previous_step, MPImanager *mpi_manager) {
+	size_t upper = mpi_manager->upper_bound(), lower = mpi_manager->lower_bound(), size = upper - lower + 1, upper_limit = problem.get_xsize() - 2;
+	int rank = mpi_manager->get_rank();
+	double * result = new double[size], back_space = -1.0, forward_space = -1.0;
+
+	if (!mpi_manager->is_root()) {
+		std::cout << rank << " sending to " << rank - 1 << std::endl;
+		MPI_Send(&previous_step[0], 1, MPI_DOUBLE, rank, rank - 1, MPI_COMM_WORLD);
+	}
+	if (!mpi_manager->is_last()) {
+		std::cout << rank << " sending to " << rank + 1 << std::endl;
+		MPI_Send(&previous_step[size - 1], 1, MPI_DOUBLE, rank, rank + 1, MPI_COMM_WORLD);
+	}
+
+	if (lower == 0) {
+		back_space = SURFACE_TEMPERATURE;
+	} else {
+		std::cout << rank << " receiving from " << rank - 1 << std::endl;
+		MPI_Recv(&back_space, 1, MPI_DOUBLE, rank - 1, rank - 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
+
+	if (upper == upper_limit) {
+		forward_space = SURFACE_TEMPERATURE;
+	} else {
+		std::cout << rank << " receiving from " << rank + 1 << std::endl;
+		MPI_Recv(&forward_space, 1, MPI_DOUBLE, rank + 1, rank + 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}
+
+
+	for (size_t i = 0; i <= size; i++) {
+		double back = i == 0 ? previous_step[i - 1] : back_space, forward = i + 1 > size ? forward_space : previous_step[i + 1];
+		result[i] = previous_step[i] + q / 2.0 * (forward - 2.0 * previous_step[i] + back);
 	}
 	return result;
 }

@@ -4,7 +4,7 @@
 MPImanager::MPImanager(size_t size) {
 	this->size = size;
 	size_t lower = lower_bound(), upper = upper_bound();
-	sub_matrices = alloc3d(1, (NUMBER_TIME_STEPS - 1), (upper - lower + 1));
+	sub_matrices = alloc3d(SOLUTIONS_NR, (NUMBER_TIME_STEPS - 1), (upper - lower + 1));
 }
 
 void MPImanager::initialize(int *argc, char ** argv[]) {
@@ -25,6 +25,11 @@ bool MPImanager::is_root() {
 	return rank == 0;
 }
 
+bool MPImanager::is_last() {
+	return (size_t)rank == size - 1;
+}
+
+
 size_t MPImanager::lower_bound() {
 	return rank * size / number_processes;
 }
@@ -40,7 +45,7 @@ void MPImanager::collect_results(vector<Method*> &solutions) {
 		size_t count = solutions.size() * (NUMBER_TIME_STEPS - 1) * (upper - lower + 1);
 		double * buffer = new double[count];
 
-		std::cout << rank << " receiving from " << p << " " << count << " bytes" <<std::endl;
+		//std::cout << rank << " receiving from " << p << " " << count << " bytes" <<std::endl;
 		if (p != 0) {
 			MPI_Recv(buffer, count, MPI_DOUBLE, p, p, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
@@ -58,7 +63,7 @@ void MPImanager::collect_results(vector<Method*> &solutions) {
 
 void MPImanager::send_results() {
 	size_t lower = lower_bound(), upper = upper_bound();
-	size_t count = 1 * (NUMBER_TIME_STEPS - 1) * (upper - lower + 1);
+	size_t count = SOLUTIONS_NR * (NUMBER_TIME_STEPS - 1) * (upper - lower + 1);
 	double * buffer = new double[count];
 	std::cout << rank << " sending: " << " " << count << " bytes" << std::endl;
 	for (size_t i = 0; i < 1; i++) {
@@ -68,12 +73,10 @@ void MPImanager::send_results() {
 			}
 		}
 	}
+	//std::cout << "Sending " << rank << std::endl;
 	MPI_Send(buffer, count, MPI_DOUBLE, 0, rank, MPI_COMM_WORLD);
 }
 
 void MPImanager::add_sub_matrix(size_t i, double ** sub_matrix) {
 	sub_matrices[i] = sub_matrix;
-	/*for (size_t j = 0; j < (NUMBER_TIME_STEPS - 1); j++) {	
-		memcpy(&sub_matrices[i][j], &sub_matrix[j], sizeof(sub_matrix[0]));
-	}*/
 }

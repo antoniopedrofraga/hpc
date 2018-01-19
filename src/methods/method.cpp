@@ -16,12 +16,11 @@ Method::Method(Problem problem) {
 /*
  * public method - compute a solution keeping track of spent time
  */
-double ** Method::compute(size_t lower, size_t upper) {
+void Method::compute(MPImanager *mpi_manager, size_t index) {
 	clock_t begin = clock();
-	double ** sub_matrix = compute_solution(lower, upper);
+	compute_solution(mpi_manager, index);
 	clock_t end = clock();
 	computational_time = double(end - begin) * 1000 / CLOCKS_PER_SEC;
-	return sub_matrix;
 }
 
 /*

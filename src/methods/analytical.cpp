@@ -14,10 +14,11 @@ Analytical::Analytical(Problem problem)
 /*
  * Computes the analytical solution 
  */
-double ** Analytical::compute_solution(size_t lower, size_t upper) {
-	Matrix * solution = problem.get_solution();
+void Analytical::compute_solution(MPImanager *mpi_manager, size_t index) {
 	Vector t_values = problem.get_tvalues();
 	Vector x_values = problem.get_xvalues();
+	size_t lower = mpi_manager->lower_bound(), upper = mpi_manager->upper_bound();
+
 	double** sub_matrix = alloc2d(NUMBER_TIME_STEPS - 1, upper - lower + 1);
 	lower++; upper++;
 	std::cout << " : Lower(" << lower << ") Upper(" << upper << ")" << std::endl;
@@ -39,6 +40,6 @@ double ** Analytical::compute_solution(size_t lower, size_t upper) {
 		sub_matrix[t - 1] = current_step;
 	}
 
-	return sub_matrix;
+	mpi_manager->add_sub_matrix(index, sub_matrix);
 }
 

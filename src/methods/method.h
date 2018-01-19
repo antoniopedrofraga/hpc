@@ -4,6 +4,8 @@
 #include "../variants/problem.h" // declare the problem structure
 #include <vector>
 
+class MPImanager;
+
 using namespace std;
 
 
@@ -90,7 +92,7 @@ public:
 	* Normal public method.
 	* Keeps track of the time to compute a solution
 	*/
-	double ** compute(size_t lower, size_t upper);
+	void compute(MPImanager *mpi_manager, size_t index);
 
 	void set_value(size_t i, size_t j, double value);
 
@@ -102,7 +104,7 @@ public:
 	* A pure virtual member.
 	* compute the solution following the rules of a given method.
 	*/
-	virtual double ** compute_solution(size_t lower, size_t upper) = 0;
+	virtual void compute_solution(MPImanager *mpi_manager, size_t index) = 0;
 
 
 };

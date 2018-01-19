@@ -2,6 +2,7 @@
 #define ANALYTICAL_H
 
 #include "method.h" // inheritance
+#include "../mpi/mpimanager.h"
 
 /**
 *  An Analytical class to compute the solution with standard procedures
@@ -27,7 +28,7 @@ public:
 	* Normal public method.
 	* compute the solution with specific given rules
 	*/
-	double ** compute_solution(size_t lower, size_t upper);
+	void compute_solution(MPImanager *mpi_manager, size_t index);
 };
 
 #endif

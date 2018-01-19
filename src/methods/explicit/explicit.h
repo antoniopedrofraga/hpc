@@ -2,6 +2,7 @@
 #define EXPLICIT_H
 
 #include "../method.h" // declare that the Method class exists (inheritance)
+#include "../../mpi/mpimanager.h"
 
 /**
 *  An explicit method class that contains default methods that only explicit methods use
@@ -22,7 +23,7 @@ protected:
 	* @param current_step A vector containing the current time step solution.
 	* @return Vector. A vector representing the next time step solution.
 	*/
-	virtual Vector build_iteration(Vector current_step, Vector previous_step) = 0;
+	virtual double* build_iteration(double* current_step, double* previous_step, MPImanager *mpi_manager) = 0;
 public:
 	// CONSTRUCTORS
 
@@ -36,7 +37,7 @@ public:
 	* Normal public method.
 	* Calculates a solution for the given problem by populating the solution grid with the correct values.
 	*/
-	double ** compute_solution(size_t lower, size_t upper);
+	void compute_solution(MPImanager *mpi_manager, size_t index);
 };
 
 #endif
