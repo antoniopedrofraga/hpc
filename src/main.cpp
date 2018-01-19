@@ -13,31 +13,36 @@ int main(int argc, char * argv[]) {
 
 	IOManager io_manager;
 	Problem * default_problem = new Problem(DELTA_T, DELTA_X);
-	MPImanager * mpi_manager = new MPImanager(default_problem->get_tsize());
+	MPImanager * mpi_manager = new MPImanager(default_problem->get_xsize() - 1);
 
 	Analytical * analytical = new Analytical(*default_problem);
-	FTCS * ftcs = new FTCS(*default_problem);
-	/*Laasonen * laasonen = new Laasonen(*default_problem);
+	/*FTCS * ftcs = new FTCS(*default_problem);
+	Laasonen * laasonen = new Laasonen(*default_problem);
 	CrankNicolson * crank_nicolson = new CrankNicolson(*default_problem);*/
 
 	mpi_manager->initialize(&argc, &argv);
 	size_t lower = mpi_manager->lower_bound(), upper = mpi_manager->upper_bound();
 
-	std::vector<Method*> solutions = {analytical, ftcs/*, laasonen, crank_nicolson*/};
+	std::vector<Method*> solutions = {analytical/*, ftcs, laasonen, crank_nicolson*/};
 
 	for (size_t index = 0; index < solutions.size(); index++) {
-		solutions[index]->compute(lower, upper);
+		std::cout << "Solution: " << index << std::endl;
+		mpi_manager->add_sub_matrix(index, solutions[index]->compute(lower, upper));
+		std::cout << "Sub matrix calculated, added to mpi_manager." << std::endl;
 
-		if (solutions[index]->get_name() != ANALYTICAL) {
+		/*if (solutions[index]->get_name() != ANALYTICAL) {
 			solutions[index]->compute_norms(analytical->get_solution());
-		}
+		}*/
 	}
 
 	if (mpi_manager->is_root()) {
-		mpi_manager->collect_results(solutions.size());
-		std::vector<Method*> methods(solutions.begin() + 1, solutions.end());
-		io_manager.export_outputs(solutions[0], methods);
+		std::cout << "Collecting results." << std::endl;
+		mpi_manager->collect_results(solutions);
+		io_manager.export_analytical(solutions[0]);
+		/*std::vector<Method*> methods(solutions.begin() + 1, solutions.end());
+		io_manager.export_outputs(solutions[0], methods);*/
 	} else {
+		std::cout << "Sending results." << std::endl;
 		mpi_manager->send_results();
 	}
 

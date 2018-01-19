@@ -16,11 +16,12 @@ Method::Method(Problem problem) {
 /*
  * public method - compute a solution keeping track of spent time
  */
-void Method::compute(size_t lower, size_t upper) {
+double ** Method::compute(size_t lower, size_t upper) {
 	clock_t begin = clock();
-	compute_solution(lower, upper);
+	double ** sub_matrix = compute_solution(lower, upper);
 	clock_t end = clock();
 	computational_time = double(end - begin) * 1000 / CLOCKS_PER_SEC;
+	return sub_matrix;
 }
 
 /*
@@ -84,6 +85,10 @@ Vector Method::get_xvalues() {
  */
 double Method::get_computational_time() {
 	return computational_time;
+}
+
+void Method::set_value(size_t i, size_t j, double value) {
+	problem.set_value(i, j, value);
 }
 
 

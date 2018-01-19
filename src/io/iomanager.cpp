@@ -91,6 +91,28 @@ void IOManager::plot_solutions(std::string output_name, Method * analytical, Met
 	}
 }
 
+void IOManager::export_analytical(Method * analytical) {
+	// Object to export plots
+	Gnuplot gp;
+
+	// methods solutions
+	Matrix analytical_matrix = analytical->get_solution();
+	unsigned int rows = analytical_matrix.getNrows();
+	unsigned int cols = analytical_matrix.getNcols();
+	double time;
+	std::string time_str;
+
+	gp << "set key on box; set tics scale 0; set border 3; set ylabel \"Temperature [ºF]\";set xlabel \"x [ft]\"; set yrange [90:310]; set term png; set xtics (\"0\" 0, \"0.5\"" << cols / 2 << ", \"1\"" << cols - 1 << ")\n";
+	for (unsigned int index = 1; index < rows; index++) {
+		time = (double)index / 10.0;
+		time_str = double_to_string(1, time);
+		gp << "set output \"./outputs/analytical" + time_str;
+		gp << ".png\";\n";
+		gp << "plot" << gp.file1d(analytical_matrix[index]) << "with lines title \"Analytical\" lw 2 lt rgb \"red\""
+			<< std::endl;
+	}
+}
+
 /*
 * private table method - Exports an error table to a .lsx file which compares the analytical solution with a given solution
 */

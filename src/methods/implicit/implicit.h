@@ -53,7 +53,7 @@ public:
 	* Normal public method.
 	* Calculates a solution for the given problem by populating the solution grid with the correct values.
 	*/
-	void compute_solution(size_t lower, size_t upper);
+	double ** compute_solution(size_t lower, size_t upper);
 };
 
 #endif

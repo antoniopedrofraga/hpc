@@ -65,6 +65,9 @@ public:
 	* @param vector<Method*> methods Vector containing the solutions 
 	*/
 	void export_outputs(Method * analytical, std::vector<Method*> methods);
+
+
+	void export_analytical(Method * analytical);
 };
 
 #endif

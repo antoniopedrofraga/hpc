@@ -4,7 +4,7 @@ install:
 	sudo apt-get install libboost-iostreams-dev libboost-system-dev libboost-filesystem-dev
 run:
 	make all
-	mpiexec -np 2 ./bin/assignment
+	mpiexec -np 4 ./bin/assignment
 export:
 	if [ -d ../outputs ]; then \
 	  	make clean; \

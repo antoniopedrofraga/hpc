@@ -81,6 +81,16 @@ void Problem::set_time_step(Vector step, double time) {
 	}
 }
 
+void Problem::set_value(size_t i, size_t j, double value) {
+	if (NUMBER_TIME_STEPS <= i) {
+		std::cout << "i = " << i << " and size = " << NUMBER_TIME_STEPS << std::endl;
+	} else if (x_size + 1 <= j) {
+		std::cout << "j = " << j << " and size = " << x_size + 1 << std::endl;
+	} else {
+		solution[i][j] = value;
+	}
+}
+
 //PUBLIC ACCESSOR METHODS
 
 /*
@@ -137,9 +147,5 @@ Vector Problem::get_tvalues() {
 */
 Matrix *Problem::get_solution() {
 	return &solution;
-}
-
-void Problem::set_solution(Matrix matrix) {
-	solution = matrix;
 }
 

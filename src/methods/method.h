@@ -2,7 +2,9 @@
 #define METHOD_H
 
 #include "../variants/problem.h" // declare the problem structure
-#include "../mpi/mpimanager.h"
+#include <vector>
+
+using namespace std;
 
 
 /**
@@ -88,7 +90,9 @@ public:
 	* Normal public method.
 	* Keeps track of the time to compute a solution
 	*/
-	void compute(size_t lower, size_t upper);
+	double ** compute(size_t lower, size_t upper);
+
+	void set_value(size_t i, size_t j, double value);
 
 	void compute_norms(Matrix analytical_matrix);
 
@@ -98,7 +102,7 @@ public:
 	* A pure virtual member.
 	* compute the solution following the rules of a given method.
 	*/
-	virtual void compute_solution(size_t lower, size_t upper) = 0;
+	virtual double ** compute_solution(size_t lower, size_t upper) = 0;
 
 
 };

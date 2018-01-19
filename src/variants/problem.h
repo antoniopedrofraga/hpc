@@ -116,7 +116,7 @@ public:
 	*/
 	void set_initial_conditions();
 
-	void set_solution(Matrix matrix);
+	void set_value(size_t i, size_t j, double value);
 };
 
 #endif

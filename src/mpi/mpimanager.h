@@ -1,7 +1,7 @@
 #ifndef MPI_MANAGER_H //include guard
 #define MPI_MANAGER_H
 
-#include "mpi.h"
+#include <mpi.h>
 #include "../variants/utils.h"
 #include "../methods/method.h"
 #include <vector>
@@ -12,7 +12,7 @@ private:
 	int rank;
 	int number_processes;
 	size_t size;
-	vector<vector<vector<double>>> sub_matrices;
+	double *** sub_matrices;
 	
 public:
 	MPImanager(size_t size);
@@ -22,9 +22,9 @@ public:
 	bool is_root();
 	size_t lower_bound();
 	size_t upper_bound();
-	void add_sub_matrix(vector<vector<double>> sub_matrix);
+	void add_sub_matrix(size_t i, double ** sub_matrix);
 
-	void collect_results(size_t solutions_size);
+	void collect_results(vector<Method*> &solutions);
 	void send_results();
 };
 
