@@ -12,6 +12,12 @@
 * \n-a method to compute the current iteration
 */
 class FTCS: public Explicit {
+private:
+	MPI_Request requests[4];
+	bool request_status[4] = { false, false, false, false };
+
+	void wait(MPImanager * mpi_manager, size_t i);
+	void exchange_data(MPImanager * mpi_manager, size_t i, const double result[], double &back, double &forward);
 public:
 	// CONSTRUCTORS
 
@@ -29,7 +35,7 @@ public:
 	* @param previous_step A vector representing the previous time step solution
 	* @return Vector. The computed solution.
 	*/
-	double* build_iteration(double* current_step, double* previous_step, MPImanager *mpi_manager);
+	double* build_iteration(double* current_step, double* previous_step, MPImanager *mpi_manager, double &back, double &forward);
 };
 
 #endif

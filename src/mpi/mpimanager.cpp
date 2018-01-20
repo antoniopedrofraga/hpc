@@ -45,7 +45,7 @@ void MPImanager::collect_results(vector<Method*> &solutions) {
 		size_t count = solutions.size() * (NUMBER_TIME_STEPS - 1) * (upper - lower + 1);
 		double * buffer = new double[count];
 
-		//std::cout << rank << " receiving from " << p << " " << count << " bytes" <<std::endl;
+		std::cout << rank << " receiving from " << p << " " << count << " bytes" <<std::endl;
 		if (p != 0) {
 			MPI_Recv(buffer, count, MPI_DOUBLE, p, p, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
@@ -73,7 +73,7 @@ void MPImanager::send_results() {
 			}
 		}
 	}
-	//std::cout << "Sending " << rank << std::endl;
+	std::cout << "Sending " << rank << std::endl;
 	MPI_Send(buffer, count, MPI_DOUBLE, 0, rank, MPI_COMM_WORLD);
 }
 
