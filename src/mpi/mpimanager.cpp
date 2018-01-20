@@ -3,14 +3,15 @@
 
 MPImanager::MPImanager(size_t size) {
 	this->size = size;
-	size_t lower = lower_bound(), upper = upper_bound();
-	sub_matrices = alloc3d(SOLUTIONS_NR, (NUMBER_TIME_STEPS - 1), (upper - lower + 1));
 }
 
 void MPImanager::initialize(int *argc, char ** argv[]) {
 	MPI_Init(argc, argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &number_processes);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+	size_t lower = lower_bound(), upper = upper_bound();
+	sub_matrices = alloc3d(SOLUTIONS_NR, (NUMBER_TIME_STEPS - 1), (upper - lower + 1));
 }
 
 void MPImanager::finalize() {
@@ -26,9 +27,8 @@ bool MPImanager::is_root() {
 }
 
 bool MPImanager::is_last() {
-	return (size_t)rank == size - 1;
+	return rank == number_processes - 1;
 }
-
 
 size_t MPImanager::lower_bound() {
 	return rank * size / number_processes;
@@ -56,6 +56,7 @@ void MPImanager::collect_results(vector<Method*> &solutions) {
 					solutions[i]->set_value(j + 1, k + lower + 1, p != 0 ?  buffer[i * solutions.size() * (upper - lower + 1) + j * (upper - lower + 1) + k] : sub_matrices[i][j][k]);
 				}
 			}
+			std::cout << solutions[i]->get_solution();
 		}
 
 	}
@@ -79,4 +80,13 @@ void MPImanager::send_results() {
 
 void MPImanager::add_sub_matrix(size_t i, double ** sub_matrix) {
 	sub_matrices[i] = sub_matrix;
+
+	if (rank == 1) {
+		for (size_t j = 0; j < (size_t)NUMBER_TIME_STEPS - 1; j++) {
+			for (size_t k = 0; k <= size; k++) {
+				std::cout << sub_matrices[i][j][k] << " ";
+			}
+			std::cout << std::endl;
+		}
+	}
 }

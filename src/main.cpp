@@ -15,13 +15,13 @@ int main(int argc, char * argv[]) {
 	Problem * default_problem = new Problem(DELTA_T, DELTA_X);
 	MPImanager * mpi_manager = new MPImanager(default_problem->get_xsize() - 1);
 
+	mpi_manager->initialize(&argc, &argv);
+	size_t lower = mpi_manager->lower_bound(), upper = mpi_manager->upper_bound();
+
 	Analytical * analytical = new Analytical(*default_problem);
 	FTCS * ftcs = new FTCS(*default_problem);
 	/*Laasonen * laasonen = new Laasonen(*default_problem);
 	CrankNicolson * crank_nicolson = new CrankNicolson(*default_problem);*/
-
-	mpi_manager->initialize(&argc, &argv);
-	size_t lower = mpi_manager->lower_bound(), upper = mpi_manager->upper_bound();
 
 	std::vector<Method*> solutions = {analytical, ftcs/*, laasonen, crank_nicolson*/};
 
@@ -39,8 +39,8 @@ int main(int argc, char * argv[]) {
 		std::cout << "Collecting results." << std::endl;
 		mpi_manager->collect_results(solutions);
 		io_manager.export_analytical(solutions[0]);
-		/*std::vector<Method*> methods(solutions.begin() + 1, solutions.end());
-		io_manager.export_outputs(solutions[0], methods);*/
+		std::vector<Method*> methods(solutions.begin() + 1, solutions.end());
+		io_manager.export_outputs(solutions[0], methods);
 	} else {
 		std::cout << "Sending results." << std::endl;
 		mpi_manager->send_results();
