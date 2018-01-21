@@ -15,9 +15,9 @@ CrankNicolson::CrankNicolson(Problem problem) : Implicit(problem) {
 * protected method - build the r vector in A.x = r
 */
 Vector CrankNicolson::build_r(Vector previous_step) {
-	unsigned int size = previous_step.getSize() - 2, j = 0;
+	size_t size = previous_step.getSize() - 2, j = 0;
 	Vector r(size);
-	for (unsigned int i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		j = i + 1;
 		r[i] = (i == 0 || i == size - 1) ? previous_step[j] + q * (SURFACE_TEMPERATURE + previous_step[j - 1] - 2.0 * previous_step[j] + previous_step[j + 1])
 		: previous_step[j] + q * (previous_step[j - 1] - 2.0 * previous_step[j] + previous_step[j + 1]);
