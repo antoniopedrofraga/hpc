@@ -17,7 +17,7 @@ private:
 	bool request_status[4] = { false, false, false, false };
 
 	void wait(MPImanager * mpi_manager, size_t i);
-	void exchange_data(MPImanager * mpi_manager, size_t i, const double result[], double &back, double &forward);
+	void exchange_data(MPImanager * mpi_manager, size_t i, double * result, double &back, double &forward);
 public:
 	// CONSTRUCTORS
 

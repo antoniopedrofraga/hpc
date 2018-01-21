@@ -17,7 +17,8 @@ Explicit::Explicit(Problem problem) : Method(problem) {
 */
 void Explicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 	size_t t_size = problem.get_tsize(), upper = mpi_manager->upper_bound(),
-	lower = mpi_manager->lower_bound(),  x_size = upper - lower + 1;
+	lower = mpi_manager->lower_bound();
+	size_t x_size = upper - lower;
 	Vector t_values = problem.get_tvalues();
 
 	double delta_t = problem.get_deltat(), time;
@@ -28,8 +29,12 @@ void Explicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 	// iterate through the several time steps
 	for (size_t i = 1; i <= t_size; i++) {
 		// if is the first iteration then the previous step is known (initial conditions)
-		if (i == 1) { 
-			memset(previous_step, INITIAL_TEMPERATURE, sizeof((x_size + 1) * sizeof(double))); 
+		if (i == 1) {
+			for (size_t t = 0; t <= x_size; t++) {
+				previous_step[t] = INITIAL_TEMPERATURE;
+			}
+		} else if (i == t_size) {
+			last_iteration = true;
 		}
 		// use the current and previous time steps to calculate the next time step solution
 		current_step = build_iteration(NULL, previous_step, mpi_manager, back, forward);
@@ -38,9 +43,10 @@ void Explicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 		// save solution if time step == 0.1, 0.2, 0.3, 0.4 or 0.5
 		int position = t_values.find(time);
 		if (position != -1) {
-			sub_matrices[position] = current_step;
+			sub_matrices[position - 1] = current_step;
 		}
 	}
+
 
 	mpi_manager->add_sub_matrix(index, sub_matrices);
 }

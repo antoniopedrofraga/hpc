@@ -14,6 +14,7 @@
 */
 class Explicit: public Method {
 protected:
+	bool last_iteration = false;
 	// PROTECTED METHODS
 
 	/**
