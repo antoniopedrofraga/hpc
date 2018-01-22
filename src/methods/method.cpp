@@ -20,10 +20,17 @@ Method::Method(Problem problem) {
  * public method - compute a solution keeping track of spent time
  */
 void Method::compute(MPImanager *mpi_manager, size_t index) {
-	clock_t begin = clock();
+	double start = 0.0, end = 0.0;
+	
+	MPI_Barrier(MPI_COMM_WORLD);
+	start = MPI_Wtime();
+
 	compute_solution(mpi_manager, index);
-	clock_t end = clock();
-	computational_time = double(end - begin) * 1000 / CLOCKS_PER_SEC;
+
+	MPI_Barrier(MPI_COMM_WORLD);
+	end = MPI_Wtime();
+
+	computational_time = double(end - start);
 }
 
 /*

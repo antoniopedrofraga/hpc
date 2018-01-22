@@ -23,16 +23,10 @@ int main(int argc, char * argv[]) {
 	Laasonen * laasonen = new Laasonen(*default_problem);
 	CrankNicolson * crank_nicolson = new CrankNicolson(*default_problem);
 
-	std::vector<Method*> solutions = {analytical, ftcs, laasonen, crank_nicolson};
+	std::vector<Method*> solutions = {analytical, laasonen, crank_nicolson, ftcs};
 
 	for (size_t index = 0; index < solutions.size(); index++) {
-		std::cout << "Solution: " << index << std::endl;
 		solutions[index]->compute(mpi_manager, index);
-		std::cout << "Sub matrix calculated, added to mpi_manager." << std::endl;
-
-		/*if (solutions[index]->get_name() != ANALYTICAL) {
-			solutions[index]->compute_norms(analytical->get_solution());
-		}*/
 	}
 
 	if (mpi_manager->is_root()) {

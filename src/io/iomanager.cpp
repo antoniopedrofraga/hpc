@@ -53,13 +53,11 @@ void IOManager::export_outputs(Method * analytical, std::vector<Method*> methods
 			output_name += "dt=" + deltat_string;
 			laasonen_times.push_back(methods[index]->get_computational_time());
 		} 
-		if (! (name == LAASONEN && methods[index]->get_deltat() != 0.01) && name != RICHARDSON) {
-			default_deltat_times.push_back(methods[index]->get_computational_time());
-		}
 		std::cout << "Exporting " << name << " method outputs... ";
 		plot_solutions(output_name, analytical, methods[index]);
 		std::cout << "Finished!" << std::endl;
 	}
+	plot_times(output_path, analytical, methods);
 	//std::vector<Method*> error_vector(methods.begin() + 1, methods.begin() + 4);
 	//error_tables(output_name, error_vector);
 }
@@ -89,6 +87,21 @@ void IOManager::plot_solutions(std::string output_name, Method * analytical, Met
 		gp << "plot" << gp.file1d(analytical_matrix[index]) << "with lines title \"Analytical\" lw 2 lt rgb \"red\","
 			<< gp.file1d(method_matrix[index]) << "with points title \"" << name << "\" pt 17 ps 1 lw 1" << std::endl;
 	}
+}
+
+void IOManager::plot_times(std::string output_name, Method * analytical, std::vector<Method*> methods) {
+	Gnuplot gp;
+	std::vector<double> times;
+	times.push_back(analytical->get_computational_time());
+
+	for (unsigned int i = 0; i < methods.size(); i++) {
+		times.push_back(methods[i]->get_computational_time());
+	}
+
+
+	gp << "set tics scale 0; set border 3; set style line 1 lc rgb '#FFA500' lt 1 lw 2 pt 7 pi -1 ps 1.5; set clip two; set ylabel \"times\";set xlabel \"\"; set term png; set xtics (\"Analytical\" 0, \"Laasonen\" 1, \"Crank Nicholson\" 2, \"FTCS\" 3)\n";
+	gp << "set output \"" << output_path << "/times.png\";\n";
+	gp << "plot" << gp.file1d(times) << " notitle with linespoint ls 1" << std::endl;
 }
 
 void IOManager::export_analytical(Method * analytical) {

@@ -21,6 +21,7 @@ public:
 	int get_rank();
 	bool is_root();
 	bool is_last();
+	bool one_process();
 	size_t lower_bound();
 	size_t upper_bound();
 	void add_sub_matrix(size_t i, double ** sub_matrix);

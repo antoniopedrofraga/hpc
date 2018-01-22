@@ -33,6 +33,8 @@ private:
 	*/
 	void plot_solutions(std::string output_name, Method * analytical, Method * method);
 
+	void plot_times(std::string output_name, Method * analytical, std::vector<Method*> methods);
+
 	/**
 	* Exports a plot that compares the norms of each solution
 	* @param string output_name File name to be exported

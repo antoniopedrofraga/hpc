@@ -31,6 +31,10 @@ bool MPImanager::is_last() {
 	return rank == number_processes - 1;
 }
 
+bool MPImanager::one_process() {
+	return 0 == number_processes;
+}
+
 size_t MPImanager::lower_bound() {
 	return rank * size / number_processes;
 }
@@ -46,7 +50,6 @@ void MPImanager::collect_results(vector<Method*> &solutions) {
 		size_t count = solutions.size() * (NUMBER_TIME_STEPS - 1) * (upper - lower + 1);
 		double buffer[count];
 
-		//std::cout << rank << " receiving from " << p << " " << count << " bytes" <<std::endl;
 		if (p != 0) {
 			MPI_Recv(buffer, count, MPI_DOUBLE, p, p, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
@@ -66,7 +69,7 @@ void MPImanager::send_results() {
 	size_t lower = lower_bound(), upper = upper_bound();
 	size_t count = SOLUTIONS_NR * ((size_t)NUMBER_TIME_STEPS - 1) * (upper - lower + 1);
 	double buffer[count];
-	//std::cout << rank << " sending: " << " " << count << " bytes" << std::endl;
+
 	for (size_t i = 0; i < SOLUTIONS_NR; i++) {
 		for (size_t j = 0; j < (size_t)NUMBER_TIME_STEPS - 1; j++) {
 			for (size_t k = 0; k <= upper - lower; k++) {

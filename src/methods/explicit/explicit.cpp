@@ -41,6 +41,8 @@ void Explicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 		// use the current and previous time steps to calculate the next time step solution
 		current_step = build_iteration(mpi_manager, previous_step);
 		previous_step = current_step;
+
+
 		time = delta_t * (double)i;
 		// save solution if time step == 0.1, 0.2, 0.3, 0.4 or 0.5
 		int position = t_values.find(time);
@@ -78,6 +80,7 @@ void Explicit::wait(MPImanager * mpi_manager, size_t i) {
 }
 
 void Explicit::exchange_data(MPImanager *mpi_manager, size_t i, double * result) {
+	if (mpi_manager->one_process()) return;
 	int rank = mpi_manager->get_rank();
 
 	if (i == 0) {
