@@ -14,12 +14,11 @@ CrankNicolson::CrankNicolson(Problem problem) : Implicit(problem) {
 /*
 * protected method - build the r vector in A.x = r
 */
-double * CrankNicolson::build_r(MPImanager * mpi_manager, double * previous_step, double &back, double &forward) {
-	size_t upper = mpi_manager->upper_bound(), lower = mpi_manager->lower_bound();
-	size_t size = upper - lower, j = 0;
-
+double * CrankNicolson::build_r(MPImanager * mpi_manager, double * previous_step) {
+	
 	double * r = (double*) malloc((size + 1) * sizeof(double));
 	for (size_t i = 0; i <= size; i++) {
+		wait(mpi_manager, i);
 		if (i == 0) {
 			r[i] = previous_step[i] + q * (2 * back - 2.0 * previous_step[i] + previous_step[i + 1]);
 		} else if (i == size) {

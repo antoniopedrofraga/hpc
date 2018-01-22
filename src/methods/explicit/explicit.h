@@ -14,7 +14,6 @@
 */
 class Explicit: public Method {
 protected:
-	bool last_iteration = false;
 	// PROTECTED METHODS
 
 	/**
@@ -24,7 +23,12 @@ protected:
 	* @param current_step A vector containing the current time step solution.
 	* @return Vector. A vector representing the next time step solution.
 	*/
-	virtual double* build_iteration(MPImanager *mpi_manager, double* previous_step, double &back, double &forward) = 0;
+	virtual double* build_iteration(MPImanager *mpi_manager, double* previous_step) = 0;
+	void wait(MPImanager * mpi_manager, size_t i);
+	void exchange_data(MPImanager * mpi_manager, size_t i, double * result);
+
+	size_t upper, lower, size;
+	double back, forward;
 public:
 	// CONSTRUCTORS
 

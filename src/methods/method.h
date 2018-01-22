@@ -2,6 +2,7 @@
 #define METHOD_H
 
 #include "../variants/problem.h" // declare the problem structure
+#include <mpi.h>
 #include <vector>
 
 class MPImanager;
@@ -28,6 +29,10 @@ protected:
 	Problem problem; /**< Protected Problem problem. Space step of the solution. */
 	std::string name; /**< Protected string name. Name of the method. */
 	double q; /**< Protected double q. A coeficient which value depends of way the equation is written, it may vary from method to method. */
+	bool last_iteration;
+
+	MPI_Request requests[4];
+	bool request_status[4];
 public:
 	// CONSTRUCTORS
 

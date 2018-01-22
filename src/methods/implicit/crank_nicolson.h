@@ -21,7 +21,7 @@ protected:
 	* @param previous_step Vector representing the solution of the previous time step.
 	* @return Vector. r vector to be used in A.x = r
 	*/
-	double * build_r(MPImanager * mpi_manager, double * previous_step, double &back, double &forward);
+	double * build_r(MPImanager * mpi_manager, double * previous_step);
 public:
 	// CONSTRUCTORS
 

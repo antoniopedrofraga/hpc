@@ -11,6 +11,9 @@ Method::Method() {}
  */
 Method::Method(Problem problem) {
 	this->problem = problem;
+	this->last_iteration = false;
+	for (size_t i = 0; i < 4; i++)
+		this->request_status[i] = false;
 }
 
 /*
