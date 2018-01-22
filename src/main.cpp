@@ -20,10 +20,10 @@ int main(int argc, char * argv[]) {
 
 	Analytical * analytical = new Analytical(*default_problem);
 	FTCS * ftcs = new FTCS(*default_problem);
-	/*Laasonen * laasonen = new Laasonen(*default_problem);
-	CrankNicolson * crank_nicolson = new CrankNicolson(*default_problem);*/
+	Laasonen * laasonen = new Laasonen(*default_problem);
+	CrankNicolson * crank_nicolson = new CrankNicolson(*default_problem);
 
-	std::vector<Method*> solutions = {analytical, ftcs/*, laasonen, crank_nicolson*/};
+	std::vector<Method*> solutions = {analytical, ftcs, laasonen, crank_nicolson};
 
 	for (size_t index = 0; index < solutions.size(); index++) {
 		std::cout << "Solution: " << index << std::endl;

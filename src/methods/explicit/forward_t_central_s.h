@@ -35,7 +35,7 @@ public:
 	* @param previous_step A vector representing the previous time step solution
 	* @return Vector. The computed solution.
 	*/
-	double* build_iteration(double* current_step, double* previous_step, MPImanager *mpi_manager, double &back, double &forward);
+	double* build_iteration(MPImanager *mpi_manager, double* previous_step, double &back, double &forward);
 };
 
 #endif

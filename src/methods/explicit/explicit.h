@@ -24,7 +24,7 @@ protected:
 	* @param current_step A vector containing the current time step solution.
 	* @return Vector. A vector representing the next time step solution.
 	*/
-	virtual double* build_iteration(double* current_step, double* previous_step, MPImanager *mpi_manager, double &back, double &forward) = 0;
+	virtual double* build_iteration(MPImanager *mpi_manager, double* previous_step, double &back, double &forward) = 0;
 public:
 	// CONSTRUCTORS
 

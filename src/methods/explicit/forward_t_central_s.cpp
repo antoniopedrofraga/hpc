@@ -12,9 +12,9 @@ FTCS::FTCS(Problem problem)
 /*
 * Normal public method - compute the first iteration of explicit methods
 */
-double* FTCS::build_iteration(double* current_step, double* previous_step, MPImanager *mpi_manager, double &back, double &forward) {
+double* FTCS::build_iteration(MPImanager *mpi_manager, double* previous_step, double &back, double &forward) {
 	size_t upper = mpi_manager->upper_bound(), lower = mpi_manager->lower_bound();
-	size_t size = upper - lower, upper_limit = problem.get_xsize() - 2;
+	size_t size = upper - lower;
 	int rank = mpi_manager->get_rank();
 	double * result = (double*) malloc((size + 1) * sizeof(double));
 	for (size_t i = 0; i <= size; i++) {

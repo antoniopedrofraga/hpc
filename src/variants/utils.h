@@ -31,7 +31,7 @@ const std::string DUFORT_FRANKEL = "DuFort-Frankel"; /**< Macro string. DuFort-F
 const std::string LAASONEN = "Laasonen"; /**< Macro string. Laasonen method name. */
 const std::string CRANK_NICHOLSON = "Crank-Nicholson"; /**< Macro string. Crank-Nicholson method name. */
 
-const size_t SOLUTIONS_NR = 2;
+const size_t SOLUTIONS_NR = 4;
 
 double ***alloc3d(int l, int m, int n);
 double **alloc2d(int rows, int cols);

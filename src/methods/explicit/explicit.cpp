@@ -37,7 +37,7 @@ void Explicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 			last_iteration = true;
 		}
 		// use the current and previous time steps to calculate the next time step solution
-		current_step = build_iteration(NULL, previous_step, mpi_manager, back, forward);
+		current_step = build_iteration(mpi_manager, previous_step, back, forward);
 		previous_step = current_step;
 		time = delta_t * (double)i;
 		// save solution if time step == 0.1, 0.2, 0.3, 0.4 or 0.5
