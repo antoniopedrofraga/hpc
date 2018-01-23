@@ -19,6 +19,7 @@ public:
 	void initialize(int *argc, char ** argv[]);
 	void finalize();
 	int get_rank();
+	int get_number_processes();
 	bool is_root();
 	bool is_last();
 	bool one_process();

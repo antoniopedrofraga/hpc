@@ -33,7 +33,7 @@ private:
 	*/
 	void plot_solutions(std::string output_name, Method * analytical, Method * method);
 
-	void plot_times(std::string output_name, Method * analytical, std::vector<Method*> methods);
+	void plot_times(std::string output_name, Method * analytical, std::vector<Method*> methods, int number_processes);
 
 	/**
 	* Exports a plot that compares the norms of each solution
@@ -66,7 +66,7 @@ public:
 	* @param Method* analytical The analytical solution
 	* @param vector<Method*> methods Vector containing the solutions 
 	*/
-	void export_outputs(Method * analytical, std::vector<Method*> methods);
+	void export_outputs(Method * analytical, std::vector<Method*> methods, int number_processes);
 
 
 	void export_analytical(Method * analytical);

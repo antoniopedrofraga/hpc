@@ -27,6 +27,10 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 	double * current_step = (double*) malloc((size + 1) * sizeof(double)), * previous_step = (double*) malloc((size + 1) * sizeof(double)), 
 	*r = (double*) malloc((size + 1) * sizeof(double));
 
+	if (mpi_manager->is_root() && !mpi_manager->one_process()) {
+		calculate_v_w(mpi_manager);
+	}
+
 	double ** sub_matrices = alloc2d(NUMBER_TIME_STEPS - 1, size + 1);
 
 	// iterate through the several time steps
@@ -44,7 +48,8 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 		r = build_r(mpi_manager, previous_step);
 
 		// use the r vector to calculate the current time step solution with the thomas algorithm
-		current_step = thomas_algorithm(mpi_manager, r, -q, (1.0 + 2.0 * q), -q);
+		current_step = thomas_algorithm(r, -q, (1.0 + 2.0 * q), -q);
+		exchange_data(mpi_manager, current_step);
 
 		previous_step = current_step;
 		time = delta_t * (double)i;
@@ -62,7 +67,7 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 /*
 * private normal method - thomas algorithm to compute a given time step solution
 */
-double * Implicit::thomas_algorithm(MPImanager * mpi_manager, double * r, double a, double b, double c) {
+double * Implicit::thomas_algorithm(double * r, double a, double b, double c) {
 	double * x = (double*) malloc((size + 1) * sizeof(double)), y[size], p[size + 1];
 
 	// building the y and p vectors (forward phase)
@@ -80,9 +85,38 @@ double * Implicit::thomas_algorithm(MPImanager * mpi_manager, double * r, double
 	// building the x vector in A.x = r linear equations system (backwards phase)
 	for (int i = size; i >= 0; i--) {
 		x[i] = (size_t)i == size ? p[i] : p[i] - y[i] * x[i + 1];
-		exchange_data(mpi_manager, i, x);
 	}
 	return x;
+}
+
+void Implicit::calculate_v_w(MPImanager * mpi_manager) {
+	double * v = (double*) malloc((size + 1) * sizeof(double)), double * w = (double*) malloc((size + 1) * sizeof(double));
+	memset(&v[0], 0.0, (size + 1) * sizeof(double));
+	memset(&w[0], 0.0, (size + 1) * sizeof(double));
+	v[0] = -q;
+	w[size] = -q;
+
+	v = thomas_algorithm(v, -q, (1.0 + 2.0 * q), -q);
+	w = thomas_algorithm(w, -q, (1.0 + 2.0 * q), -q);
+
+	size_t y_size = mpi_manager->get_number_processes() * 2;
+	double ** spike_matrix = (double *) malloc(sizeof(double) * y_size * y_size);
+	memset(&spike_matrix[0][0], 0.0, sizeof(double) * y_size * y_size);
+
+	for (size_t i = 0; i < y_size; i++) {
+		spike_matrix[i][i] = 1.0;
+		if (i != 0 && i != y_size - 1) {
+			if (i % 2 == 0) {
+				spike_matrix[i - 1][i] = v[size];
+				spike_matrix[i - 2][i] = v[0]; 
+			} else {
+				spike_matrix[i + 2][i] = v[size];
+				spike_matrix[i + 1][i] = v[0]; 
+			}
+		}
+	}
+
+	s = gaussian_elimination(spike_matrix, y_size);
 }
 
 void Implicit::wait(MPImanager * mpi_manager, size_t i) {
@@ -109,29 +143,20 @@ void Implicit::wait(MPImanager * mpi_manager, size_t i) {
 
 }
 
-void Implicit::exchange_data(MPImanager *mpi_manager, size_t i, double * result) {
+void Implicit::exchange_data(MPImanager *mpi_manager, double * &d) {
+	if (mpi_manager->one_process()) return;
 	if (last_iteration) return;
 
+	size_t y_size = mpi_manager->get_number_processes() * 2;
+	double * y = (double *) malloc(sizeof(double) * y_size), g[2] = { d[0], d[size] };
 	int rank = mpi_manager->get_rank();
+	MPI_Gatherv(g, 2, MPI_DOUBLE, &y[0], y_size, 2, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-	if (i == 0) {
-		if (!mpi_manager->is_root()) {
-			MPI_Isend(&result[i], 1, MPI_DOUBLE, rank - 1, 0, MPI_COMM_WORLD, &requests[0]);
-			if (!request_status[0]) request_status[0] = true;
-		}
-		if (!mpi_manager->is_last()) {
-			MPI_Irecv(&forward, 1, MPI_DOUBLE, rank + 1, 0, MPI_COMM_WORLD, &requests[1]);
-			if (!request_status[1]) request_status[1] = true;
-		}
-	}
-	if (i == size) {
-		if (!mpi_manager->is_last()) {
-			MPI_Isend(&result[i], 1, MPI_DOUBLE, rank + 1, 0, MPI_COMM_WORLD, &requests[2]);
-			if (!request_status[2]) request_status[2] = true;
-		}
-		if (!mpi_manager->is_root()) {
-			MPI_Irecv(&back, 1, MPI_DOUBLE, rank - 1, 0, MPI_COMM_WORLD, &requests[3]);
-			if (!request_status[3]) request_status[3] = true;
+	if (mpi_manager->is_root()) {
+		double buffer[y_size];
+
+		for (size_t i = 0; i < y_size; i++) {
+			buffer[i] = s[]
 		}
 	}
 }

@@ -23,6 +23,10 @@ int MPImanager::get_rank() {
 	return rank;
 }
 
+int MPImanager::get_number_processes() {
+	return number_processes;
+}
+
 bool MPImanager::is_root() {
 	return rank == 0;
 }

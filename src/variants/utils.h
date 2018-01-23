@@ -5,8 +5,8 @@
 #include <string> // string usage
 #include <vector>
 
-const double DELTA_T = 0.01; /**< Macro double. The default time step. */
-const double DELTA_X = 0.05; /**< Macro double. The default space step. */
+const double DELTA_T = 0.001; /**< Macro double. The default time step. */
+const double DELTA_X = 0.005; /**< Macro double. The default space step. */
 
 const std::vector<double> DELTA_T_LASSONEN = {0.01, 0.025, 0.05, 0.1}; /**< Macro double. Time steps to study in Laasonen Implicit Scheme. */
 
@@ -35,5 +35,6 @@ const size_t SOLUTIONS_NR = 4;
 
 double ***alloc3d(int l, int m, int n);
 double **alloc2d(int rows, int cols);
+double * gaussian_elimination(double ** mat, size_t n);
 
 #endif

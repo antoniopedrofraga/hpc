@@ -34,7 +34,7 @@ int main(int argc, char * argv[]) {
 		mpi_manager->collect_results(solutions);
 		io_manager.export_analytical(solutions[0]);
 		std::vector<Method*> methods(solutions.begin() + 1, solutions.end());
-		io_manager.export_outputs(solutions[0], methods);
+		io_manager.export_outputs(solutions[0], methods, mpi_manager->get_number_processes());
 	} else {
 		std::cout << "Sending results." << std::endl;
 		mpi_manager->send_results();

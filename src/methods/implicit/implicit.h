@@ -28,8 +28,10 @@ private:
 	* @param c Upper diagonal value of the tridiagonal matrix
 	* @return Vector. Vector that represents the current time step solution.
 	*/
-	double * thomas_algorithm(MPImanager * mpi_manager, double * r, double a, double b, double c);
-
+	double * thomas_algorithm(double * r, double a, double b, double c);
+	void calculate_v_w(MPImanager * mpi_manager);
+	double * s;
+	
 protected:
 	// PROTECTED METHODS
 
@@ -41,12 +43,11 @@ protected:
 	* @return Vector. The r vector, which can be used in to calculate the current time step solution with Tomas Algorithm.
 	*/
 	virtual double * build_r(MPImanager * mpi_manager, double * previous_step) = 0; 
-	void exchange_data(MPImanager *mpi_manager, size_t i,  double* current_step);
+	void exchange_data(MPImanager *mpi_manager,  double* &current_step);
 	void wait(MPImanager * mpi_manager, size_t i);
 
 	size_t upper, lower, size;
 	double back, forward;
-
 public:
 	// CONSTRUCTORS
 

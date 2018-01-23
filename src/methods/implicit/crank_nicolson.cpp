@@ -20,9 +20,9 @@ double * CrankNicolson::build_r(MPImanager * mpi_manager, double * previous_step
 	for (size_t i = 0; i <= size; i++) {
 		wait(mpi_manager, i);
 		if (i == 0) {
-			r[i] = previous_step[i] + q * (2 * back - 2.0 * previous_step[i] + previous_step[i + 1]);
+			r[i] = previous_step[i] + q * (back + back - 2.0 * previous_step[i] + previous_step[i + 1]);
 		} else if (i == size) {
-			r[i] = previous_step[i] + q * (previous_step[i - 1] - 2.0 * previous_step[i] + 2 * forward);
+			r[i] = previous_step[i] + q * (forward + previous_step[i - 1] - 2.0 * previous_step[i] + forward);
 		} else {
 			r[i] = previous_step[i] + q * (previous_step[i - 1] - 2.0 * previous_step[i] + previous_step[i + 1]);
 		}
