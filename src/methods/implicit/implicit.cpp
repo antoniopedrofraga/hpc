@@ -22,12 +22,10 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 	size = upper - lower;
 
 	double delta_t = problem.get_deltat(), time;
-
 	double * current_step = (double*) malloc((size + 1) * sizeof(double)), * previous_step = (double*) malloc((size + 1) * sizeof(double)), 
 	*r, *x, *y;
 
 	back = mpi_manager->is_root() ? SURFACE_TEMPERATURE : INITIAL_TEMPERATURE, forward = mpi_manager->is_last() ? SURFACE_TEMPERATURE : INITIAL_TEMPERATURE;
-
 	v = (double*) malloc((size + 1) * sizeof(double)), w = (double*) malloc((size + 1) * sizeof(double));
 	std::fill_n(&v[0], size + 1, 0.0);
 	std::fill_n(&w[0], size + 1, 0.0);
@@ -78,6 +76,9 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 	}
 
 	mpi_manager->add_sub_matrix(index, sub_matrices);
+
+	free(r); free(x); free(y);
+	free(v); free(w); free(previous_step);
 }
 
 /*
@@ -151,6 +152,7 @@ double * Implicit::spikes_algorithm(MPImanager *mpi_manager, double * y, double 
 	}
 	return current_step;
 }
+
 
 double * Implicit::exchange_data(MPImanager *mpi_manager, double &head, double &tail) {
 	if (mpi_manager->one_process()) return NULL;

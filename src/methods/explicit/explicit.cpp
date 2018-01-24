@@ -53,6 +53,8 @@ void Explicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 
 
 	mpi_manager->add_sub_matrix(index, sub_matrices);
+
+	free(previous_step);
 }
 
 
