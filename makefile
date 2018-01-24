@@ -6,7 +6,9 @@ compile:
 	make all
 	make run
 run:
-	mpiexec -np 4 ./bin/assignment
+	for npes in 1 2 3 4; do \
+		mpiexec -np $$npes ./bin/assignment; \
+	done;
 memcheck:
 	make all
 	mpiexec -np 4 valgrind --tool=memcheck --leak-check=full ./bin/assignment

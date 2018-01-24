@@ -1,15 +1,16 @@
 #include "mpimanager.h"
 
 
-MPImanager::MPImanager(size_t size) {
-	this->size = size;
-}
+MPImanager::MPImanager() {}
 
 void MPImanager::initialize(int *argc, char ** argv[]) {
 	MPI_Init(argc, argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &number_processes);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+}
 
+void MPImanager::set_size(size_t size) {
+	this->size = size;
 	size_t lower = lower_bound(), upper = upper_bound();
 	sub_matrices = alloc3d(SOLUTIONS_NR, (NUMBER_TIME_STEPS - 1), (upper - lower + 1));
 }
@@ -81,7 +82,7 @@ void MPImanager::send_results() {
 			}
 		}
 	}
-	
+
 	MPI_Send(buffer, count, MPI_DOUBLE, 0, rank, MPI_COMM_WORLD);
 }
 

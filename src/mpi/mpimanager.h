@@ -15,7 +15,7 @@ private:
 	double *** sub_matrices;
 	
 public:
-	MPImanager(size_t size);
+	MPImanager();
 	void initialize(int *argc, char ** argv[]);
 	void finalize();
 	int get_rank();
@@ -26,6 +26,7 @@ public:
 	size_t lower_bound();
 	size_t upper_bound();
 	void add_sub_matrix(size_t i, double ** sub_matrix);
+	void set_size(size_t size);
 
 	void collect_results(vector<Method*> &solutions);
 	void send_results();
