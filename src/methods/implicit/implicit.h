@@ -29,9 +29,12 @@ private:
 	* @return Vector. Vector that represents the current time step solution.
 	*/
 	double * thomas_algorithm(double * r, double a, double b, double c);
-	void calculate_v_w(MPImanager * mpi_manager);
-	double * s;
-	
+	void calculate_spikes(MPImanager * mpi_manager);
+	double * spikes_algorithm(MPImanager * mpi_manager, double * y, double * x);
+	double * exchange_data(MPImanager *mpi_manager, double &head, double &tail);
+	double ** spike_matrix;
+	double * v, * w;
+	int * receive_pos, * receive_count;
 protected:
 	// PROTECTED METHODS
 
@@ -43,8 +46,6 @@ protected:
 	* @return Vector. The r vector, which can be used in to calculate the current time step solution with Tomas Algorithm.
 	*/
 	virtual double * build_r(MPImanager * mpi_manager, double * previous_step) = 0; 
-	void exchange_data(MPImanager *mpi_manager,  double* &current_step);
-	void wait(MPImanager * mpi_manager, size_t i);
 
 	size_t upper, lower, size;
 	double back, forward;

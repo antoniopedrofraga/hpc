@@ -29,7 +29,7 @@ int main(int argc, char * argv[]) {
 		solutions[index]->compute(mpi_manager, index);
 	}
 
-	if (mpi_manager->is_root()) {
+	/*if (mpi_manager->is_root()) {
 		std::cout << "Collecting results." << std::endl;
 		mpi_manager->collect_results(solutions);
 		io_manager.export_analytical(solutions[0]);
@@ -38,7 +38,7 @@ int main(int argc, char * argv[]) {
 	} else {
 		std::cout << "Sending results." << std::endl;
 		mpi_manager->send_results();
-	}
+	}*/
 
 	mpi_manager->finalize();
 

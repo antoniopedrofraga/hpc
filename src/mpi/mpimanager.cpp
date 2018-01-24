@@ -81,7 +81,7 @@ void MPImanager::send_results() {
 			}
 		}
 	}
-	std::cout << "Sending " << rank << std::endl;
+	
 	MPI_Send(buffer, count, MPI_DOUBLE, 0, rank, MPI_COMM_WORLD);
 }
 

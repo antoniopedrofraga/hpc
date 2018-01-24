@@ -21,7 +21,6 @@ void Analytical::compute_solution(MPImanager *mpi_manager, size_t index) {
 
 	double** sub_matrix = alloc2d(NUMBER_TIME_STEPS - 1, upper - lower + 1);
 	lower++; upper++;
-	std::cout << " : Lower(" << lower << ") Upper(" << upper << ")" << std::endl;
 
 	// iterates through the solution columns
 	for (unsigned int t = 1; t < NUMBER_TIME_STEPS; t++) {

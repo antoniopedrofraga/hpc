@@ -1,10 +1,10 @@
 all: ./*.cpp
-	mpicxx -std=c++14 -lpthread -W ./*.cpp -o testing
+	g++ -std=c++14 -W ./*.cpp -o testing
 install:
 	sudo apt-get install libboost-iostreams-dev libboost-system-dev libboost-filesystem-dev
 run:
 	make all
-	mpiexec -np 2 --mca orte_base_help_aggregate 0 ./testing
+	mpiexec -np 1 --mca orte_base_help_aggregate 0 ./testing
 memcheck:
 	make all
 	mpiexec -np 4 --mca orte_base_help_aggregate 0 valgrind --tool=memcheck --leak-check=full ./bin/assignment

@@ -47,12 +47,9 @@ void IOManager::export_outputs(Method * analytical, std::vector<Method*> methods
 	std::string name, output_name, deltat_string;
 	for (unsigned int index = 0; index < methods.size(); index++) {
 		name = (*methods[index]).get_name();
-		deltat_string = name == LAASONEN ? double_to_string(3, methods[index]->get_deltat()) : double_to_string(2, methods[index]->get_deltat());
+		deltat_string = double_to_string(3, methods[index]->get_deltat());
 		output_name = output_path + '/' + name;
-		if (name == LAASONEN) {
-			output_name += "dt=" + deltat_string;
-			laasonen_times.push_back(methods[index]->get_computational_time());
-		} 
+		output_name += "dt=" + deltat_string;
 		std::cout << "Exporting " << name << " method outputs... ";
 		plot_solutions(output_name, analytical, methods[index]);
 		std::cout << "Finished!" << std::endl;
@@ -98,9 +95,10 @@ void IOManager::plot_times(std::string output_name, Method * analytical, std::ve
 		times.push_back(methods[i]->get_computational_time());
 	}
 
+	std::string deltat_string = double_to_string(3, methods[0]->get_deltat());
 
 	gp << "set tics scale 0; set border 3; set style line 1 lc rgb '#FFA500' lt 1 lw 2 pt 7 pi -1 ps 1.5; set clip two; set ylabel \"times\";set xlabel \"\"; set term png; set xtics (\"Analytical\" 0, \"Laasonen\" 1, \"Crank Nicholson\" 2, \"FTCS\" 3)\n";
-	gp << "set output \"" << output_path << "/times" << number_processes << ".png\";\n";
+	gp << "set output \"" << output_path << "/times" << number_processes << "dt=" << deltat_string << ".png\";\n";
 	gp << "plot" << gp.file1d(times) << " notitle with linespoint ls 1" << std::endl;
 }
 
