@@ -1,0 +1,19 @@
+\select@language {english}
+\contentsline {section}{Introduction}{4}
+\contentsline {subsection}{Problem definition}{5}
+\contentsline {subsection}{Numerical analysis}{5}
+\contentsline {section}{Procedures}{6}
+\contentsline {subsection}{Explicit Schemes}{7}
+\contentsline {subsubsection}{Richardson}{7}
+\contentsline {subsubsection}{DuFort-Frankel}{8}
+\contentsline {subsection}{Implicit Schemes}{8}
+\contentsline {subsubsection}{Laasonen Simple Implicit}{9}
+\contentsline {subsubsection}{Crank-Nicholson}{10}
+\contentsline {section}{Solution Design}{11}
+\contentsline {section}{Results \& Discussion}{12}
+\contentsline {subsection}{Laasonen Implicit Scheme: study of time step variation}{14}
+\contentsline {section}{Conclusions}{16}
+\contentsline {section}{Appendices}{18}
+\contentsline {subsection}{Richardson Method Analysis}{18}
+\contentsline {subsubsection}{Accuracy}{18}
+\contentsline {subsubsection}{Stability}{19}
