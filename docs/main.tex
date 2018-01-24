@@ -107,7 +107,7 @@
 \null\vspace{\fill}
 \begin{abstract}
 \normalsize
-Three numerical schemes were applied to compute a solution for a parabolic partial differential equation, the heat conduction equation. It was used an explicit scheme and two implicit schemes. The solutions were computed both sequentially and in parallel making use of \textbf{MPI}, \textbf{M}essage \textbf{P}assing \textbf{I}nterface technology. Two pairs of \textbf{time} and \textbf{space} steps were studied, along with their effect on the solving system. The \textbf{overhead} of the increasing number of used processes to parallelize the solution was analysed, 
+Three numerical schemes were applied to compute a solution for a parabolic partial differential equation, the heat conduction equation. It was used an explicit scheme and two implicit schemes. The solutions were computed both sequentially and in parallel making use of \textbf{MPI}, \textbf{M}essage \textbf{P}assing \textbf{I}nterface technology. Two pairs of \textbf{time} and \textbf{space} steps were studied, along with their effect on the solving system. \textbf{Speed-ups} of solutions computed with several processes were analysed, and their values were discussed. 
 
 \end{abstract}
 \vspace{\fill}
@@ -162,91 +162,34 @@ Surface Temperature& $T_{sur}$\\
 
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
-Numerical methods are used to obtain an approximated solution to problems with no given analytical solution. These methods can be used in order to save computational time, therefore they can obtain results which are similar to the real solution more efficiently. Four different schemes were applied to compute an approximated solution to a \textbf{Parabolic Partial Differential Equation}, in this case the heat conduction equation. 
-\begin{center}
-\Large
-$
-\frac{\partial f}{\partial t} = D\frac{\partial ^2 f}{\partial x^2} 
-$
-\end{center}
-\par 
-This condition had to be satisfied on a grid in space and time, which means the problem has a structured mesh type, and therefore can be represented as a grid of two dimensions. The previous equation could be written in its discretized form for each method.
+
+Numerical methods are used to obtain an approximated solution for a given problem. The exact solution of those problems are usually computed in \textbf{Nondeterministic Polynomial Time}, therefore an approximated solution is often accepted. The approximation factor is often related with the number of space steps that a time step is split on. A high number of space steps leads to a more accurate solution, keeping in mind the existence of \textbf{round-off} errors \cite{fraga}.
+
+\par Although, decreasing the value of space steps results in a more "computational hungry" process. Which means that the time used to compute a solution increases, unless several processes are used to compute the final solution. Parallel computing is simple if it's done with \textbf{independent} data. In this case, there's no need to exchange data between workers. Sometimes the methods used to compute the solution have dependencies between space steps calculations. Thus, unless a process communicates with different processes that are computing dependable data, it's not possible to compute an approximated solution. 
+
+\par The challenge is to minimize the communication overhead. To achieve that, one has to keep in mind how to perform communications. Deciding \textbf{when} and \textbf{how} to \textbf{exchange} data between processes.
+
+\par Memory management plays an important role on \textbf{efficiency} as well. A program is split into \textbf{segments}, and each segment is split into \textbf{pages}. The size of each segment depends of the compiler. Each of them contains important data like the \textbf{stack}, \textbf{heap}, and actual data. But each \textbf{page} is divided into equal parts, \textbf{4kb} on UNIX based systems. Therefore, whenever a program accesses an address, a page is loaded into \textbf{cache}, which is a very fast type of memory close to the \textbf{CPU}. This means that accessing memory within the same page won't add the overhead of moving the data from the main memory to cache again. Such knowledge might make one think of how to write specific parts of the code.  
 
 \subsection*{Problem definition}
 \addcontentsline{toc}{subsection}{Problem definition}
-A few initial or boundary conditions were set, including the heat conduction equation. An existing wall with \textbf{1 \textit{ft}} thick had an initial temperature of \textbf{100ºF} and the surface temperatures at both sides were suddenly increased and maintained to \textbf{300ºF}. It is also known that the wall is composed of nickel steel (40\% Ni) with a Diffusivity of \textbf{0.01 $ft ^2/h$}.
-\par
-Since the wall has a 1 \textit{ft} thickness, the problem space domain could be restricted between \textbf{0} and \textbf{1}, and the diffusivity value, which is considered constant, could be set to \textbf{0.01}. The time domain was restricted between \textbf{0} to \textbf{0.5}:
-\begin{center}
-\normalsize
-$
-x \in [0, 1], t \in [0, 0.5]
-$
-\end{center}
-\begin{center}
-\normalsize
-$
-T_{in} = 100, T_{sur} = 300
-$
-\end{center}
-\begin{center}
-\normalsize
-$
-D = 0.01
-$
-\end{center}
-\par 
-The initial boundaries can be formalized in mathematical expressions:
-\begin{center}
-\normalsize
-$
-f(x,0) = T_{in}
-$
-\end{center}
-\begin{center}
-\normalsize
-$
-f(0,t) = T_{sur}
-$
-\end{center}
-\begin{center}
-\normalsize
-$
-f(1,t) = T_{sur}
-$
-\end{center}
-\par
-The analytical solution of this problem was given by the following expression:
-\begin{center}
-\normalsize
-$$
-f(x,t) = T_{sur} + 2(T_{in} - T_{sur}) \sum_{m=1}^{m=\infty} 
-e ^{-D t (m \pi / L) ^2}  \frac{1 - (-1)^m}{m \pi} sin \left(\frac{m \pi x}{L}\right)$$  
 
+The problem is defined in the previously developed \textbf{report}\cite{fraga} for \textbf{Computational Methods} \& \textbf{C++} modules. It is intended to examine the application of distributed memory parallel programming techniques on the referred problem.
+
+\subsection*{Analysis}
+\addcontentsline{toc}{subsection}{Analysis}
+\par The analysis of \textbf{parallel programming} can be done by measuring times of execution. One should measure the time of execution with a single process, comparing it with the execution time in parallel with \textbf{p} processors. Therefore, the \textbf{Speedup} concept can be defined\cite{speedup},
+\linebreak
+\begin{center}
+$
+	Speedup(P) = \frac{Time_{parallel}(P)}{Time_{Sequential}}
+$
 \end{center}
-
-\subsection*{Numerical analysis}
-\addcontentsline{toc}{subsection}{Numerical analysis}
-\par Numerical analysis is the study of the obtained solution. Criticism is very important on this phase, since the solutions are evaluated. Digital computers have problems with round-off errors, and since values were truncated, problems with discretization errors may appear. There are some definitions related with this study: stability, convergence and approximation \cite{convergence_stability_consistency, numerical_analysis}.
-
-\par A method is declared stable if the error doesn't grow as time advances. Theoretically, conditions that make a scheme becomes stable or unstable can be known.
-\par Approximation can be verified by comparing the computed solution with the analytical solution, and check if there is an approximation at all.
-\par Convergence is defined by how well the computed solution approximates to the analytical solution. This can vary with a change in the number of \textbf{time steps} or \textbf{space steps}. A smaller number of steps can lead to a bigger error, whereas a bigger number of steps can lead to a considerably more time expensive solution. Every method could be developed using \textbf{Taylor Series} \cite{hoffman}. This series were developed for \textbf{n} terms. Thus, every method has a given approximation factor, that could be represented in the \textbf{Big Oh} annotation. The error related with this approximation is called \textbf{Truncation Error} \cite{numerical_analysis}.
-\par A quantitative analysis can be done by comparing solutions of each method. By calculating the \textbf{norms} of the error matrix, one can conclude which method is more accurate. The \textbf{error matrix} can be calculated by subtracting each cell of the \textbf{analytical} solution matrix to the cells of a method matrix. When the result is a matrix of small values, the error is small. Whenever a norm is calculated, one is able to translate an error matrix into a single value:
-
-\begin{itemize}[noitemsep] 
-\item \textbf{One Norm} - Which is given by adding the absolute values of each cell of the matrix.
-\item \textbf{Two Norm} - Which is obtained by adding the squares of every value in the matrix.
-\item \textbf{Uniform Norm} - Which represents the biggest error, or the maximum value in the matrix.
-\end{itemize}
-
-The second norm "punishes" the biggest values, and "regards" the lowest ones. Notice that a the square of a value between $0$ and $1$ is lower than the given value. Whereas the square of a value bigger than 1 is higher. Therefore, this norm is a good quality indicator. 
-
-\par A stencil could also be developed for each method, which relates the several grid points, revealing the dependencies for a calculation in a more graphical way. 
+\par It is important to define the concept of \textbf{Theoretical Speedup} as well. Whenever a program is computed in parallel, the optimal speedup is obtained by taking the number of processes used to compute a solution. Often, the \textbf{Optimal Speedup} is difficult to be achieved. This happens because the solution is computed in a distributed system. Processes, by default, are not able to access data from different processes easily. One must create a form of \textbf{IPC}, or \textbf{I}nter \textbf{P}rocess \textbf{C}ommunication. The \textbf{MPI} technology offers an \textbf{API} to achieve that. 
 
 \section*{Procedures}
 \addcontentsline{toc}{section}{Procedures}
-Four different schemes/methods were used to compute a solution for the given problem, two of them are explicit schemes, \textbf{Richardson}, \textbf{DuFort-Frankel}, and two of them are implicit schemes, \textbf{Laasonen Simple Implicit} and \textbf{Crank-Nicholson}. The space step was maintained at \textbf{0.05} \textit{ft}, and the time step took the value of \textbf{0.01} \textit{h}, studying every solutions in intervals of \textbf{0.1} hours from \textbf{0.0} to \textbf{0.5}. The \textbf{Laasonen Simple Implicit} solution was also studied with different time steps, always maintaining the same space step,  \textbf{$\Delta x = 0.05$}:
+Three different schemes/methods were used to compute a solution for the given problem, one of them is an explicit schemes, \textbf{Richardson}, \textbf{DuFort-Frankel}, and two of them are implicit schemes, \textbf{Laasonen Simple Implicit} and \textbf{Crank-Nicholson}. The space step was maintained at \textbf{0.05} \textit{ft}, and the time step took the value of \textbf{0.01} \textit{h}, studying every solutions in intervals of \textbf{0.1} hours from \textbf{0.0} to \textbf{0.5}. The \textbf{Laasonen Simple Implicit} solution was also studied with different time steps, always maintaining the same space step,  \textbf{$\Delta x = 0.05$}:
 \begin{itemize}[noitemsep] 
 \item $ \Delta t = 0.01 $
 \item $ \Delta t = 0.025 $
@@ -627,189 +570,17 @@ $
 %\addcontentsline{toc}{section}{References}
 \begin{thebibliography}{0}
 
-\bibitem{convergence_stability_consistency}
-Gilberto E. Urroz, July 2004, \textit{Convergence, Stability, and Consistency of Finite
-Difference Schemes in the Solution of Partial Differential
-Equations,} Available at: <\url{http://ocw.usu.edu/Civil_and_Environmental_Engineering/Numerical_Methods_in_Civil_Engineering/StabilityNumericalSchemes.pdf}> [Accessed 2 October 2017]
+\bibitem{fraga}
+António Pedro Fraga, December 2017, \textit{Heat Conduction Equation, C++ \& Computational Methods} Available at: <\url{http://pedrofraga.me/heat-conduction-equation.pdf}> [Accessed 24 January 2018]
 
-\bibitem{numerical_analysis}
-S. Scott Collis, April 26, 2005, \textit{An Introduction to Numerical Analysis
-for Computational Fluid Mechanics,} [Accessed 2 October 2017]
-
-\bibitem{hoffman}
-Klaus A. Hoffman, Steve T. Chiang, August 2000, \textit{Computational Fluid Dynamics, Volume 1} [Accessed 27 October 2017]
-
-\bibitem{heat_transfer}
-Richard H. Pletcher, Jhon C. Tannehill, Dale A. Anderson, 2013, \textit{Computational Fluid Mechanics and Heat Transfer, Third Edition}, [Accessed 27 October 2017]
-
-\bibitem{thomas}
-W. T. Lee, \textit{Tridiagonal Matrices: Thomas Algorithm}, Available at: <\url{https://www3.ul.ie/wlee/ms6021_thomas.pdf}> [Accessed 28 October 2017]
-
-\bibitem{error}
-\textit{ Error in Euler’s Method}, Available at: <\url{http://www.math.unl.edu/~gledder1/Math447/EulerError}> [Accessed 2 November 2017]
-
-\bibitem{step_size}
-John D. Cook, February 22 2008, \textit{ Step size for numerical differential equations}, Available at: <\url{https://www.johndcook.com/NumericalODEStepSize.pdf}> [Accessed 3 November 2017]
-
-\bibitem{explicit_implicit}
-B.J.P. Kaus, \textit{Explicit versus implicit Finite Difference Schemes}, Available at: <\url{https://www.geowiss.uni-mainz.de/Dateien/Finite_Differerence_Timpl_expl.pdf}> [Accessed 4 November 2017]
-
-\bibitem{numerical_methods_pde}
-Markus Schmuck, \textit{Numerical Methods for PDEs}, Available at: <\url{http://www.macs.hw.ac.uk/~ms713/lecture_9.pdf}> [Accessed 10 November 2017]
+\bibitem{speedup}
+Multiple authors, May 2017, \textit{A Comprehensive Linear Speedup Analysis for Asynchronous Stochastic Parallel Optimization from Zeroth-Order to First-Order} Available at: <\url{http://xrlian.com/res/Asyn_Comprehensive/paper.pdf}> [Accessed 24 January 2018]
 
 \end{thebibliography}
 \newpage
 
 \section*{Appendices}
 \addcontentsline{toc}{section}{Appendices}
-
-\subsection*{Richardson Method Analysis}
-\addcontentsline{toc}{subsection}{Richardson Method Analysis}
-
-\subsubsection*{Accuracy}
-\addcontentsline{toc}{subsubsection}{Accuracy}
-
-Every term can be developed with Taylor expansions:
-
-
-\begin{center}
-\Large
-$
-f(x + \Delta t) = f_i^{n} + \Delta t \left( \frac{\partial f}{\partial t} \right)_i^n + \frac{\Delta t ^2}{2} \left( \frac{\partial ^2 f}{\partial t ^2} \right)_i^n + O(\Delta t ^3)
-$
-\end{center}
-\begin{center}
-\Large
-$
-f(x - \Delta t)  = f_i^{n} - \Delta t \left( \frac{\partial f}{\partial t} \right)_i^n + \frac{\Delta t ^2}{2} \left( \frac{\partial ^2 f}{\partial t ^2} \right)_i^n + O(\Delta t ^3)
-$
-\end{center}
-\begin{center}
-\Large
-$
-f(x + \Delta x)  = f_i^{n} + \Delta x \left( \frac{\partial f}{\partial x} \right)_i^n + \frac{\Delta x 2}{2} \left( \frac{\partial ^2 f}{\partial x ^2} \right)_i^n + \frac{\Delta x 3}{3} \left( \frac{\partial ^3 f}{\partial x ^3} \right)_i^n + O(\Delta x ^4)
-$
-\end{center}
-\begin{center}
-\Large
-$
-f(x - \Delta x) = f_i^{n} - \Delta x \left( \frac{\partial f}{\partial x} \right)_i^n + \frac{\Delta x ^2}{2} \left( \frac{\partial ^2 f}{\partial x ^2} \right)_i^n - \frac{\Delta x 3}{3} \left( \frac{\partial ^3 f}{\partial x ^3} \right)_i^n + O(\Delta x ^4)
-$
-\end{center}
-
-\par By replacing every term expansion in the \textbf{Richardson's Method equation}, one should obtain the \textbf{Heat Conduction Equation}.
-
-\par Starting by the left side of the \textbf{Richardson's Method equation},
-\begin{center}
-\Large
-$
-\frac{f_i^{n + 1} - f_i^{n - 1}}{2 \Delta t}
-$
-\end{center}
-
-\par it can be converted into,
-
-\begin{center}
-\Large
-$
-\frac{f_i^{n} + \Delta t \left( \frac{\partial f}{\partial t} \right)_i^n + \frac{\Delta t ^2}{2} \left( \frac{\partial ^2 f}{\partial t ^2} \right)_i^n + O(\Delta t ^3) - f_i^{n} + \Delta t \left( \frac{\partial f}{\partial t} \right)_i^n - \frac{\Delta t ^2}{2} \left( \frac{\partial ^2 f}{\partial t ^2} \right)_i^n + O(\Delta t ^3)}{2 \Delta t}
-$
-\end{center}
-
-\par which can be translated to,
-
-\begin{center}
-\Large
-$
-\left( \frac{\partial f}{\partial t} \right)_i^n + O(\Delta t ^2)
-$
-\end{center}
-
-\par When looking at the right side of the equation,
-
-\begin{center}
-\Large
-$
-D \frac{f_{i + 1}^{n} - 2f_{i}^{n} + f_{i - 1}^{n}}{(\Delta x)^2}
-$
-\end{center}
-
-\par one can replace the terms by their expansions as well,
-
-\begin{center}
-$
-D \frac{f_i^{n} + \Delta x \left( \frac{\partial f}{\partial x} \right)_i^n + \frac{\Delta x ^2}{2} \left( \frac{\partial ^2 f}{\partial x ^2} \right)_i^n + \frac{\Delta x 3}{3} \left( \frac{\partial ^3 f}{\partial x ^3} \right)_i^n + O(\Delta x ^4) - 2f_{i}^{n} + f_i^{n} - \Delta x \left( \frac{\partial f}{\partial x} \right)_i^n + \frac{\Delta x ^2}{2} \left( \frac{\partial ^2 f}{\partial x ^2} \right)_i^n - \frac{\Delta x 3}{3} \left( \frac{\partial ^3 f}{\partial x ^3} \right)_i^n + O(\Delta x ^4)}{(\Delta x)^2}
-$
-\end{center}
-
-\par which can be translated to,
-
-\begin{center}
-\Large
-$
-D \left( \frac{\partial ^2 f}{\partial x ^2} \right)_i^n + O(\Delta x ^2)
-$
-\end{center}
-
-\par Therefore the obtained equation is of order of $O(\Delta x ^2, \Delta t ^2)$,
-
-\begin{center}
-\Large
-$
-\left( \frac{\partial f}{\partial t} \right)_i^n - D \left( \frac{\partial ^2 f}{\partial x ^2} \right)_i^n = O(\Delta x ^2, \Delta t ^2)
-$
-\end{center}
-\subsubsection*{Stability}
-\addcontentsline{toc}{subsubsection}{Stability}
-
-\par The Richardson Scheme is given by,
-
-\begin{center}
-\Large
-$
-\frac{f_i^{n + 1} - f_i^{n - 1}}{2 \Delta t} = D \frac{f_{i + 1}^{n} - 2f_{i}^{n} + f_{i - 1}^{n}}{(\Delta x)^2}
-$
-\end{center}
-
-\par Using the von-Neumann analysis one can write:
-
-\begin{center}
-\large
-$ 
-f_i^{n} = \xi^n \times e^{j \omega i}
-$
-\end{center}
-
-\par and by inserting this expression in the scheme, assuming that $ q = D \frac{\Delta t}{(\Delta x)^2}$ , one obtains, 
-
-\begin{center}
-\large
-$ 
-	\xi ^2 + 8 q \sin ^2( \frac{1}{2} \omega) \xi - 1 = 0
-$
-\end{center}
-
-which is a quadratic expression, thus it can be solved with,
-
-\begin{center}
-\large
-$ 
-	\xi = -4 q \sin ^2 \frac{\omega}{2} \pm \sqrt{1 + 16 q ^2 \sin ^4 \frac{\omega}{2}}
-$
-\end{center}
-
-assuming that $r = 4 q \sin ^2 \frac{\omega}{2} $:
-
-\begin{center}
-\large
-$ 
-	\xi = -r \pm \sqrt{1 + r ^2}
-$
-\end{center}
-
-one will obtain $\lvert \xi \lvert > 1$  when $r > 0$, and because stability requires that $\lvert \xi \lvert \le 1 $, the Richardson scheme is \textbf{unconditionally unstable}.
-
-\newpage
 
 
 
