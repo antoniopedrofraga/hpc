@@ -21,9 +21,9 @@ export:
 clean:
 	\rm  -r ./outputs/*.png
 plottimes:
-	gnuplot -e "set ylabel \"time [s]\";set xlabel \"Number of processes\";set datafile separator ' '; set format x \"%.2g\"; set xtics 1; set term png; set output \"./outputs/times.png\"; plot \"./outputs/csvs/Crank-Nicholsondt=0.0001.csv\" using 1:2 title 'Crank Nicholson' with linespoints ls 3 lw 2 lc rgb '#0060ad' pt 9 ps 1.5, \
-     \"./outputs/csvs/Forward-Time-Central-Spacedt=0.0001.csv\" using 1:2 title 'FTCS' with linespoints ls 2 lw 2 lc rgb '#dd181f' pt 5 ps 1.5, \
-     \"./outputs/csvs/Laasonendt=0.0001.csv\" using 1:2 title 'Laasonen' with linespoints ls 1 lw 2 lc rgb '#FFA500' pt 7 ps 1.5"
+	gnuplot -e "set ylabel \"time [s]\";set xlabel \"Number of processes\";set datafile separator ' '; set format x \"%.2g\"; set xtics 1; set term png; set output \"./outputs/times.png\"; plot \"./outputs/csvs/Crank-Nicholsondt=0.00001.csv\" using 1:2 title 'Crank Nicholson' with linespoints ls 3 lw 2 lc rgb '#0060ad' pt 9 ps 1.5, \
+     \"./outputs/csvs/Forward-Time-Central-Spacedt=0.00001.csv\" using 1:2 title 'FTCS' with linespoints ls 2 lw 2 lc rgb '#dd181f' pt 5 ps 1.5, \
+     \"./outputs/csvs/Laasonendt=0.00001.csv\" using 1:2 title 'Laasonen' with linespoints ls 1 lw 2 lc rgb '#FFA500' pt 7 ps 1.5"
 clean-csvs:
 	rm ./outputs/csvs/*
 generate-doxygen-config:
