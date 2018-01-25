@@ -165,7 +165,7 @@ Surface Temperature& $T_{sur}$\\
 
 Numerical methods are used to obtain an approximated solution for a given problem. The exact solution of those problems are usually computed in \textbf{Nondeterministic Polynomial Time}, therefore an approximated solution is often accepted. The approximation factor is often related with the number of space steps that a time step is split on. A high number of space steps leads to a more accurate solution, keeping in mind the existence of \textbf{round-off} errors \cite{fraga}.
 
-\par Although, decreasing the value of space steps results in a more "computational hungry" process. Which means that the time used to compute a solution increases, unless several processes are used to compute the final solution. Parallel computing is simple if it's done with \textbf{independent} data. In this case, there's no need to exchange data between workers. Sometimes the methods used to compute the solution have dependencies between space steps calculations. Thus, unless a process communicates with different processes that are computing dependable data, it's not possible to compute an approximated solution. 
+\par Although, decreasing the value of space steps results in a more "computational hungry" process. Which means that the time used to compute a solution increases, unless several processes are used to compute the final solution. Parallel computing is simple if it's done with \textbf{independent} data. In this case, there's no need to exchange data between workers. Sometimes the methods used to compute the solution have dependencies between space steps calculations. Thus, unless a process communicates with different processes, it's not possible to compute an approximated solution. 
 
 \par The challenge is to minimize the communication overhead. To achieve that, one has to keep in mind how to perform communications. Deciding \textbf{when} and \textbf{how} to \textbf{exchange} data between processes.
 
@@ -179,98 +179,88 @@ The problem is defined in the previously developed \textbf{report}\cite{fraga} f
 \subsection*{Analysis}
 \addcontentsline{toc}{subsection}{Analysis}
 \par The analysis of \textbf{parallel programming} can be done by measuring times of execution. One should measure the time of execution with a single process, comparing it with the execution time in parallel with \textbf{p} processors. Therefore, the \textbf{Speedup} concept can be defined\cite{speedup},
-\linebreak
+\newline
 \begin{center}
 $
 	Speedup(P) = \frac{Time_{parallel}(P)}{Time_{Sequential}}
 $
 \end{center}
-\par It is important to define the concept of \textbf{Theoretical Speedup} as well. Whenever a program is computed in parallel, the optimal speedup is obtained by taking the number of processes used to compute a solution. Often, the \textbf{Optimal Speedup} is difficult to be achieved. This happens because the solution is computed in a distributed system. Processes, by default, are not able to access data from different processes easily. One must create a form of \textbf{IPC}, or \textbf{I}nter \textbf{P}rocess \textbf{C}ommunication. The \textbf{MPI} technology offers an \textbf{API} to achieve that. 
+\hfill
+\par It is important to define the concept of \textbf{Theoretical Speedup} as well. Whenever a program is computed in parallel, the optimal speedup is obtained by taking the number of processes used to compute a solution. Often, the \textbf{Optimal Speedup} is difficult to be achieved. This happens because the solution is computed in a distributed system. Processes, by default, are not able to access data from different processes easily. One must use a form of \textbf{IPC}, or \textbf{I}nter \textbf{P}rocess \textbf{C}ommunication. The \textbf{MPI} technology offers an \textbf{API} to achieve that. 
 
 \section*{Procedures}
 \addcontentsline{toc}{section}{Procedures}
-Three different schemes/methods were used to compute a solution for the given problem, one of them is an explicit schemes, \textbf{Richardson}, \textbf{DuFort-Frankel}, and two of them are implicit schemes, \textbf{Laasonen Simple Implicit} and \textbf{Crank-Nicholson}. The space step was maintained at \textbf{0.05} \textit{ft}, and the time step took the value of \textbf{0.01} \textit{h}, studying every solutions in intervals of \textbf{0.1} hours from \textbf{0.0} to \textbf{0.5}. The \textbf{Laasonen Simple Implicit} solution was also studied with different time steps, always maintaining the same space step,  \textbf{$\Delta x = 0.05$}:
+
+Three different schemes/methods were used to compute a solution for the given problem, sequentially and in parallel. One of them is an explicit schemes, \textbf{Forward in Time, Central in Space}, and two of them are implicit schemes, \textbf{Laasonen Simple Implicit} and \textbf{Crank-Nicholson}. Two pairs \textbf{space} and \textbf{time} steps were studied,
 \begin{itemize}[noitemsep] 
-\item $ \Delta t = 0.01 $
-\item $ \Delta t = 0.025 $
-\item $ \Delta t = 0.05 $
-\item $ \Delta t = 0.1 $
+\item $ \Delta t = 0.1 $ and $ \Delta x = 0.5$
+\item $ \Delta t = 0.001 $ and $ \Delta x = 0.005$
 \end{itemize}
-As referred, considering the initial equation, these methods can be written in its discretized form.
+It was seen in the previous work\cite{fraga} that these schemes can be written in its discretized form.
 
-\subsection*{Explicit Schemes}
-\addcontentsline{toc}{subsection}{Explicit Schemes}
-
-\par This type of schemes rely only on the previous time steps to calculate the current time step solution. In the case of both used methods, they were relying in known values of the \textbf{n - 1} and \textbf{n} time steps to calculate a value for the \textbf{n + 1} time step. Thereby, the second time step can not be calculated by these methods, because there's no possible value for a negative time step. A different method, for the same equation, with two levels of time steps was used in order to overcome this situation, the \textbf{Forward in Time and Central in Space} scheme. It's known that this method is \textbf{conditionally stable}, and its stability condition is given by\cite{hoffman},
-
+\par A \textbf{time step} can be defined as an array, divided by the number of space steps to be computed. In a sequential algorithm, the process handles the entire domain. Since it was intended to parallelize the computational method, the \textbf{time step} can be divided into \textbf{p} \textbf{almost equal} parts, with \textbf{p} being the number of processes available. Notice that having \textbf{more} processes than space steps is an exception. Thereby, the \textbf{lower} and \textbf{upper} bounds of space steps to be computed by a process can be determined by it's ranking.
+\newline
 \begin{center}
-\Large
-$
-\frac{D \Delta t}{(\Delta x)^2} \leq 0.5
-$
-\end{center}
-
-Therefore, considering $\Delta t = 0.01$, $\Delta x = 0.05$, and $D = 0.1$, this method is declared stable. It's important to have a stable solution for the first iteration, since it is a major influence on the overall solution\cite{heat_transfer}. Therefore, this iteration could be calculated with the following expression,
-
-\begin{center}
-\Large
-$
-f_{i}^{n + 1} = f_{i}^{n} + \frac{D \Delta t}{(\Delta x)^2}(f_{i + 1}^{n} - 2f_{i}^{n} + f_{i - 1}^{n})
-$
-\end{center}
-
-\begin{figure}[!htb]
-\centering
+\large
 \begin{minipage}{.5\textwidth}
   \centering
-  \includegraphics[width=.8\linewidth]{richardson.png}
-  \captionof{figure}{DuFort-Frankel's method stencil.}
+  $
+  	lower = \frac{ranking \times number_{Space Steps} }{number_{Processes}}
+  $
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-  \includegraphics[width=.8\linewidth]{dufort-frankel.png}
-  \captionof{figure}{Richardson's method stencil.}
+  $
+  	upper = \frac{ (ranking + 1) \times number_{Space Steps} }{number_{Processes}} - 1
+  $
 \end{minipage}
+\end{center}
+\hfill
+\par Defining these values as integers will avoid any kind of \textbf{floating point} values.
+\par We can not, however, define these rules if it happens to have more available processes than space steps. In this case, only the number of processes corresponding to the number of space steps can be used.
+\par Notice that the process with the $\textbf{rank} = 0$, computes the first window of values, whereas the process with $\textbf{rank} = 1$ computes the second window of values. The same idea is replicated to the next processes and windows.
+
+\subsection*{Explicit Scheme}
+\addcontentsline{toc}{subsection}{Explicit Scheme}
+
+\par It is known that these type of schemes rely only on values from the previous time steps to compute the solution\cite{fraga}. Therefore, once one has access to this values, it is possible to compute the values for the current time step. In this cases, processes that need values from different workers, can obtain them by using the MPI API.
+
+\subsubsection*{Forward in Time Central in Space}
+\addcontentsline{toc}{subsubsection}{Forward in Time Central in Space}
+
+\par The stencil for this scheme can be observed on \textbf{Figure 1}. When computing the \textbf{first} time step for this scheme, the previous time step values correspond to the \textbf{initial conditions}. This means that no data had to be exchanged during the calculations of that iteration. Every process had knowledge of these conditions.
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=.6\linewidth]{FTCS.png}
+  \captionof{figure}{Forward in Time Central in Space method stencil.}
 \end{figure}
 
-\subsubsection*{Richardson}
-\addcontentsline{toc}{subsubsection}{Richardson}
-The Richardson method can be applied by having a central in time and central in space scheme. Regarding to stability issues, this method is unconditionally unstable. This method is of order \textbf{O($\Delta x ^2$, $\Delta t ^2$)} \cite{hoffman}. Following the heat conduction equation, the expression could be represented at \textbf{Figure 2} and could be written as following:
-\begin{center}
-\Large
-$
-\frac{f_i^{n + 1} - f_i^{n - 1}}{2 \Delta t} = D \frac{f_{i + 1}^{n} - 2f_{i}^{n} + f_{i - 1}^{n}}{(\Delta x)^2}
-$
-\end{center}
-\par Which corresponds to,
-\begin{center}
-\Large
-$
-f_{i}^{n + 1} = f_{i}^{n - 1} - \frac{2\Delta t D}{(\Delta x)^2} (f_{i + 1}^{n} - 2 f_{i}^{n} + f_{i - 1}^{n})
-$
-\end{center}
+\par However, the next time steps calculations of each process required values that didn't exist in their memory. \textbf{Non-blocking} communication was used to exchange dependable data. It was known that the next iteration to be computed by those processes needed the first time step value from the processes that were responsible to compute the next window of values. Therefore, whenever a process finished to compute the first value of an iteration, was responsible to send that value to the previous process. With the exception of the \textbf{root} process, that knows the value from the \textbf{Initial Conditions}. By this time, the processes could expect to receive a value from the next process, so the same \textbf{Non-blocking} communication was used to obtain it. \textbf{Figure 2} contains a graphic representation of the sending messages on the first iteration.
+\newline
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=.7\linewidth]{fcts_comm1.png}
+  \captionof{figure}{Processes sending first value to the previous worker.}
+\end{figure}
+\hfill
+\par Following the same mindset, whenever a process reached the last value to be computed, it was sending that information to the process responsible for the next window. Knowing that it would have to receive a value from the previous process. Notice that the \textbf{ranking} of the receiving process could be discovered by incrementing its own ranking, and the ranking of the sending process was found by decrementing it. The process with the highest ranking was not sending or receiving any value from the next worker, because there was none. It could also access to the surface temperature value, a \textbf{known} and constant variable. The graphical representation of this phase can be observed on \textbf{Figure 3}.
+\newline
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=.7\linewidth]{fcts_comm2.png}
+  \captionof{figure}{Processes sending first value to the previous worker.}
+\end{figure}
+\hfill
 
-\subsubsection*{DuFort-Frankel}
-\addcontentsline{toc}{subsubsection}{DuFort-Frankel}
-\par The DuFort-Frankel scheme can be applied by having central differences in both derivatives, but to prevent stability issues, the space derivative term $f_i^n$ can be written as the average value of $f_{i}^{n + 1}$ and $f_{i}^{n - 1}$. The method stencil can be observed at \textbf{Figure 1}. Therefore this method is of order \textbf{O($\Delta x ^2$, $\Delta t ^2$, $(\frac{\Delta t}{\Delta x}) ^2$)} \cite{hoffman}, it is declared as unconditionally stable and it may be formulated as follows:
-\begin{center}
-\Large
-$
-\frac{f_i^{n + 1} - f_i^{n - 1}}{2 \Delta t} = D \frac{f_{i + 1}^{n} - f_{i}^{n + 1} - f_{i}^{n - 1} + f_{i - 1}^{n}}{(\Delta x)^2}
-$
-\end{center}
-\par Which is equivalent to,
-\begin{center}
-\Large
-$
-f_{i}^{n + 1} = f_{i}^{n - 1} - \frac{2\Delta t D}{(\Delta x)^2} (f_{i + 1}^{n} - f_{i}^{n + 1} - f_{i}^{n - 1} + f_{i - 1}^{n})
-$
-\end{center}
+\par The advantage of using \textbf{Non-blocking} communication, is that processes didn't have to go into the \textbf{waiting} state whenever they were sending or receiving messages. The \textbf{MPI Wait} call was used by the time processes were about to use those values. For the next iteration, whenever a process was computing the first and last value of its own window, it had to wait for the receiving value. The process would enter into a \textbf{waiting} state if the request was not fulfilled by that time. 
+
+\par This mechanism of communication was used in nearly every time step calculations, \textbf{except} for the \textbf{first} and \textbf{last} one, when there was no need of communications.
 
 \subsection*{Implicit Schemes}
 \addcontentsline{toc}{subsection}{Implicit Schemes}
 
-\par In other hand, implicit schemes rely not only on lower time steps to calculate a solution, but also on the current time step known values. Each time step solution can often be solved by applying the Thomas Algorithm, which is an algorithm that can solve tridiagonal matrix systems, $Ax = r$\cite{thomas}. This algorithm is a special case of the LU decomposition, with a better performance. The matrix $A$ can be decomposed in a lower triangular matrix $L$ and an upper triangular matrix $U$, therefore $A = LU$\cite{thomas}. This algorithm consists of two steps, the downwards phase where the equation $Lp = r$ is solved and the upwards phase, solving $Ux = p$\cite{thomas}, obtaining a solution for $x$. 
+\par Implicit schemes rely on both previous and current time step in order to calculate the desired value\cite{fraga}. The methods stencil can be observed on \textbf{Figure 4} and \textbf{Figure 5}. 
 
 \begin{figure}[!htb]
 \centering
@@ -286,178 +276,112 @@ $
 \end{minipage}
 \end{figure}
 
-\subsubsection*{Laasonen Simple Implicit}
-\addcontentsline{toc}{subsubsection}{Laasonen Simple Implicit}
-\par The time derivative is considered forward in time. Central difference is used in space derivative, and the scheme is of order \textbf{O($\Delta x $, $\Delta t ^2$)}\cite{hoffman}, and unconditionally stable. Concluding, the below equation could be established, and it could be represented at \textbf{Figure 3}:
+The time step computation of these schemes requires that a special form of a linear system of equations to be solved. This system $Ax = b$ contains a \textbf{tridiagonal matrix}, the matrix \textbf{A}. In case of a sequential code, the \textbf{Thomas Algorithm} is the most efficient solution. With a parallel code, the \textbf{spike} algorithm can be used to solve dependencies among processes. The results can be achieved by splitting the computation methodology into three different phases.
 
-\begin{center}
-\Large
-$
-\frac{f_i^{n + 1} - f_i^{n}}{\Delta t} = D \frac{f_{i + 1}^{n + 1} - 2f_{i}^{n + 1} + f_{i - 1}^{n + 1}}{(\Delta x)^2} 
-$
-\end{center}
+\begin{itemize}[noitemsep] 
+\item Solve $\textbf{Ay = b}$ in parallel.
+\item Gather the top and bottom values of \textbf{y} into one process and solve dependencies, computing a vector \textbf{x}. Broadcast the solution.
+\item Solve $\textbf{Sx = y}$ in parallel.
+\end{itemize}
 
-\par Assuming that $c = \frac{\Delta t D}{(\Delta x)^2}$, the equation could be represented as:
-
-\begin{center}
-\Large
-$
-(1 - 2c)f_i^{n + 1} = f_i^n + c \left[f_{i + 1}^{n + 1} + f_{i - 1}^{n + 1}\right]
-$
-\end{center}
-
-\par The values of the first and last space position of each time step are known, they are represent by the $T_{sur}$ value. Therefore, in every second and penultimate space step, two terms of the previous equation could be successfully inquired. For the second space step, the equation could be divided by having the unknown terms in the left side and the known terms in the right side:
-
-\begin{center}
-\Large
-$
-(1 - 2c)f_i^{n + 1} - c f_{i + 1}^{n + 1} = f_i^n + c f_{i - 1}^{n + 1}
-$
-\end{center}
-
-\par And the same could be done for the penultimate space step:
-
-\begin{center}
-\Large
-$
-(1 - 2c)f_i^{n + 1} - c f_{i - 1}^{n + 1} = f_i^n + c f_{i + 1}^{n + 1}
-$
-\end{center}
-
-\par For every other space steps with unknown values, the expression could be generalized as:
-
-\begin{center}
-\Large
-$
-(1 - 2c)f_i^{n + 1} - c \left[f_{i + 1}^{n + 1} + f_{i - 1}^{n + 1}\right] = f_i^n 
-$
-\end{center}
-
-\par Considering that the maximum number of space steps is \textbf{m}, the previous expressions could form a system of linear equations, $A.x = r$:
-\begin{center}
-$
-\begin{bmatrix}
-    (1 - 2c) & -c & 0 & 0 & \dots & 0 & 0 \\
-    -c & (1 - 2c) & -c & 0 & \dots & 0 & 0 \\
-    0 & -c & (1 - 2c) & -c & \dots & 0 & 0 \\
-    \hdotsfor{7} \\
-    0 & 0 & 0 & 0 & \dots & -c & (1 - 2c) \\
-\end{bmatrix}
-\begin{bmatrix}
-    f_1^{n + 1} \\
-    f_2^{n + 1} \\
-    f_3^{n + 1} \\
-    \dots \\
-    f_{\textbf{m} - 1}^{n + 1} \\
-\end{bmatrix}
-=
-\begin{bmatrix}
-    f_1^{n} + c f_0^{n + 1} \\
-    f_2^{n} \\
-    f_3^{n} \\
-    \dots \\
-    f_{\textbf{m} - 1}^{n} + c f_{\textbf{m}}^{n + 1} \\
-\end{bmatrix}
-$
-\end{center}
-
-
-\subsubsection*{Crank-Nicholson}
-\addcontentsline{toc}{subsubsection}{Crank-Nicholson}
-\par The time derivative is considered forward in time, and the space derivative can be replaced by the average of central differences in time steps \textbf{n} and \textbf{n + 1}. The method is of order \textbf{O($\Delta x ^2$, $\Delta t ^2$)} \cite{hoffman}, is declared unconditionally stable and it could be represented at \textbf{Figure 4}. Thus:
-
-\begin{center}
-\Large
-$
-\frac{f_i^{n + 1} - f_i^{n}}{\Delta t} = \frac{1}{2} D {\left[\frac{f_{i + 1}^{n + 1} - 2f_{i}^{n + 1} + f_{i - 1}^{n + 1}}{(\Delta x)^2} + \frac{f_{i + 1}^{n} - 2f_{i}^{n} + f_{i - 1}^{n}}{(\Delta x)^2}\right]}
-$
-\end{center}
-
-\par In this method, the coefficient had a new value, $c = \frac{1}{2}\frac{\Delta t D}{(\Delta x)^2}$, and assuming that $p = f_{i + 1}^{n} + f_{i - 1}^{n}$, the equation could be written as follows,
-
-\begin{center}
-\Large
-$
-(1 - 2c)f_i^{n + 1} = (1 - 2c)f_i^n + c \left[f_{i + 1}^{n + 1} + f_{i - 1}^{n + 1} + p\right]
-$
-\end{center}
-
-\par Following the same logical principles of the previous scheme, 
-some expressions could be generalized for the second,
-
-\begin{center}
-\Large
-$
-(1 - 2c)f_i^{n + 1} - c f_{i + 1}^{n + 1} = (1 - 2c)f_i^n + c \left[f_{i - 1}^{n + 1} + p\right]
-$
-\end{center}
-, penultimate, 
-\begin{center}
-\Large
-$
-(1 - 2c)f_i^{n + 1} - c f_{i + 1}^{n + 1} = (1 - 2c)f_i^n + c \left[f_{i + 1}^{n + 1} + p\right]
-$
-\end{center}
-, and every other space steps with unknown values.
-
-\begin{center}
-\Large
-$
-(1 - 2c)f_i^{n + 1} - c \left[f_{i + 1}^{n + 1} + f_{i - 1}^{n + 1}\right] = (1 - 2c)f_i^n + cp
-$
-\end{center}
-
-\par Thus, a tridiagonal matrix system is obtained,
-
-\begin{center}
-\small
-$
-\begin{bmatrix}
-    (1 - 2c) & -c & 0 & 0 & \dots & 0 & 0 \\
-    -c & (1 - 2c) & -c & 0 & \dots & 0 & 0 \\
-    0 & -c & (1 - 2c) & -c & \dots & 0 & 0 \\
-    \hdotsfor{7} \\
-    0 & 0 & 0 & 0 & \dots & -c & (1 - 2c) \\
-\end{bmatrix}
-\begin{bmatrix}
-    f_1^{n + 1} \\
-    f_2^{n + 1} \\
-    f_3^{n + 1} \\
-    \dots \\
-    f_{\textbf{m} - 1}^{n + 1} \\
-\end{bmatrix}
-=
-\begin{bmatrix}
-    (1 - 2c)f_1^{n} + c \left[f_0^{n + 1} + p\right] \\
-    (1 - 2c)f_2^{n} + cp \\
-    (1 - 2c)f_3^{n} + cp\\
-    \dots \\
-    (1 - 2c)f_{\textbf{m} - 1}^{n} + c \left[f_{\textbf{m}}^{n + 1} + p\right] \\
-\end{bmatrix}
-$
-\end{center}
-
-\section*{Solution Design}
-\addcontentsline{toc}{section}{Solution Design}
-\par The code was first planned with an initial structure and suffered incremental upgrades. A \textbf{method} class was created, being a prototype with multiple inheritance, containing three sub classes: \textbf{Analytical}, \textbf{Implicit} and \textbf{Explicit}. Therefore, the \textbf{Implicit} class is an Abstract class as well. This class has three sub classes, representing the three explicit methods used in this problem. Similarly, the \textbf{Implicit} class is also an abstract class, having two implicit methods classes as sub classes. The previously described inheritance structure can be more easily visualized on \textbf{Figure 5}.
-
+\par Since the matrix \textbf{A} is a \textbf{tridiagonal} matrix, it can be divided into several smaller matrices, a \textbf{block tridiagonal matrix}\cite{chang}, like seen in \textbf{Figure 6}. Each process was responsible to solve a smaller linear system of equations, obtaining its own \textbf{y} array.
+\newline
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=.5\linewidth]{method_inheritance.png}
-  \captionof{figure}{Method Class inheritance diagram.}
+  \includegraphics[width=.68\linewidth]{spikedivision.png}
+  \captionof{figure}{Division of main matrix in blocks.}
 \end{figure}
 
-\par A Method class contains a \textbf{Problem} object. The \textbf{Problem} class represents the Heat Conduction problem, containing informations about the time and space steps, the solution and initial conditions.
-\par An \textbf{Input and Output Manager} class was developed so that the code related with plots and tables exportations could be separated from the logical source code. This class was developed with several methods regarding data interpretation and structuration in order to easily export plot charts. A \textbf{gnuplot c++ library} was used, therefore the gnuplot syntax could be directly used from the c++ code, cutting down the need of developing external bash scripts for this specific purpose.
-\par Despite the referred classes, a header file with useful \textbf{macros} was declared. This file contains information about which conditions to test, like the initial temperature and the surface temperature. Therefore, if for some reason, one of this values changes, it can be easily corrected.
-\par The \textbf{Matrix} and \textbf{Vector} classes, which were provided in the c++ module were reused to represent a solution matrix or a solution vector of a certain iteration.
-\par The several objects in this structure could be instantiated in the main file, calling methods to compute the several solutions and to export their plot charts. The previously described classes can be represented in the \textbf{Figure 6} diagram.
+
+\par This implies that several variables are not used in this phase (\textbf{-q}). Thus, two different arrays were created\cite{spike}, \textbf{v'} and \textbf{w'},
+\newline
+\begin{center}
+\begin{minipage}{.5\textwidth}
+  \centering
+ $
+v' = 
+\begin{bmatrix}
+	0 \\
+	0 \\
+    \dots \\
+    -q \\
+\end{bmatrix}
+$
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+   $
+w' = 
+\begin{bmatrix}
+	-q \\
+	\dots \\
+    0 \\
+    0 \\
+\end{bmatrix}
+$
+\end{minipage}
+\end{center}
+
+\par These arrays were used to compute the \textbf{spikes} arrays. They can be computed by solving $\textbf{Av = v'}$ and $\textbf{Aw = w'}$, creating two different arrays, \textbf{v} and \textbf{w}. And since \textbf{A} is a tridiagonal matrix, they can be computed with \textbf{Thomas Algorithm} as well. These arrays are useful to create the matrix \textbf{S} of the last phase of the \textbf{spike} algorithm. 
+
+\par In order to solve the $\textbf{Sx = y}$, one has to solve a special form of this equation first. Involving every \textbf{top} and \textbf{bottom} element of the \textbf{y} array of each process, forming the array $\textbf{y'}$. This information was gathered by the \textbf{root} process. In order to solve dependencies between processes, the $\textbf{S'x' = y'}$ system was solved. Note that the $v_t$,  $v_b$, $w_t$ and $w_b$ values are the \textbf{top} and \textbf{bottom} values of both \textbf{v} and \textbf{w} arrays, the \textbf{spike arrays}, that were previously calculated.
+\newline
+\begin{center}
+$
+\begin{bmatrix}
+    1 & 0 & v_t &  &  &  &  & \\
+    0 & 1 & v_b &  &  &  &  &  \\
+     & w_t & 1 & 0 & v_t &  &  &  \\
+   	 & w_b & 0 & 1 & v_b &  &  & \\ 
+   	 &  &  & w_t & 1 & 0 & v_t &  \\
+   	 &  &  & w_b & 0 & 1 & v_b &  \\
+   	 &  &  &  &  & w_t & 1 & 0 \\
+   	 &  &  &  &  & w_b & 0 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+    x'0_t \\
+    x'0_b \\
+    x'1_t \\
+    x'1_b \\
+    x'2_t \\
+    x'2_b \\
+    x'3_t \\
+    x'3_b \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+    y'0_t \\
+    y'0_b \\
+    y'1_t \\
+    y'1_b \\
+    y'2_t \\
+    y'2_b \\
+    y'3_t \\
+    y'3_b \\
+\end{bmatrix}
+$
+\end{center}
+
+\par This system of equations can be solved by using the \textbf{Gaussian Elimination} method, and the $\textbf{x'}$, can be \textit{broadcasted} to the rest of the processes. 
+\par The last phase consists of solving the $\textbf{Sx = y}$ system, that can be defined in  \textbf{Figure 7}.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=.5\linewidth]{class_diagram.png}
-  \captionof{figure}{Class Diagram.}
-\end{figure} 
+  \includegraphics[width=.68\linewidth]{Sxy.png}
+  \captionof{figure}{Sx = y system of equations.}
+\end{figure}
+
+\par Therefore, the solution can be obtained with\cite{spike},
+
+\[
+\left\{ 
+\begin{array}{c}
+X_0 = Y_0 - V X_1^t \\ 
+X_{j} = Y_{j} - V X_{j + 1}^t - W X_{j - 1}^b \\ 
+X_{P - 1} = Y_{P - 1} - W X_{P - 2}^b
+\end{array}
+\right. 
+\]
 
 \section*{Results \& Discussion}
 \addcontentsline{toc}{section}{Results \& Discussion}
@@ -571,10 +495,17 @@ $
 \begin{thebibliography}{0}
 
 \bibitem{fraga}
-António Pedro Fraga, December 2017, \textit{Heat Conduction Equation, C++ \& Computational Methods} Available at: <\url{http://pedrofraga.me/heat-conduction-equation.pdf}> [Accessed 24 January 2018]
+António Pedro Fraga, December 2017, \textit{Heat Conduction Equation, C++ \& Computational Methods}, Available at: <\url{http://pedrofraga.me/heat-conduction-equation.pdf}> [Accessed 24 January 2018]
 
 \bibitem{speedup}
-Multiple authors, May 2017, \textit{A Comprehensive Linear Speedup Analysis for Asynchronous Stochastic Parallel Optimization from Zeroth-Order to First-Order} Available at: <\url{http://xrlian.com/res/Asyn_Comprehensive/paper.pdf}> [Accessed 24 January 2018]
+Multiple authors, May 2017, \textit{A Comprehensive Linear Speedup Analysis for Asynchronous Stochastic Parallel Optimization from Zeroth-Order to First-Order}, Available at: <\url{http://xrlian.com/res/Asyn_Comprehensive/paper.pdf}> [Accessed 24 January 2018]
+
+\bibitem{chang}
+Li-Wen Chang, 2014, \textit{Scalable Parallel Tridiagonal Algorithms with Diagonal Pivoting and their optimization for Many-Core Architectures}, Available at: <\url{http://impact.crhc.illinois.edu/shared/Papers/Chang-Thesis-2014.pdf}> [Accessed 25 January 2018]
+
+\bibitem{spike}
+Eric Polizzi, Ahmed H. Sameh, February 2016, \textit{A parallel hybrid banded system solver: the SPIKE algorithm}, Available at: <\url{http://impact.crhc.illinois.edu/shared/Papers/Chang-Thesis-2014.pdf}> [Accessed 25 January 2018]
+
 
 \end{thebibliography}
 \newpage
