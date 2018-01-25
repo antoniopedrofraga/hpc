@@ -11,13 +11,16 @@ class MPImanager {
 private:
 	int rank;
 	int number_processes;
+	int used_processes;
 	size_t size;
 	double *** sub_matrices;
-	
+	MPI_Comm world;
 public:
 	MPImanager();
 	void initialize(int *argc, char ** argv[]);
 	void finalize();
+	MPI_Comm get_world();
+	bool part_of_world();
 	int get_rank();
 	int get_number_processes();
 	bool is_root();

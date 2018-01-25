@@ -157,16 +157,17 @@ double * Implicit::spikes_algorithm(MPImanager *mpi_manager, double * y, double 
 double * Implicit::exchange_data(MPImanager *mpi_manager, double &head, double &tail) {
 	if (mpi_manager->one_process()) return NULL;
 
+	MPI_Comm world = mpi_manager->get_world();
 	size_t y_size = mpi_manager->get_number_processes() * 2;
 	double * y = (double *) malloc(sizeof(double) * y_size), g[2] = { head, tail }, *x = (double *) malloc(sizeof(double) * y_size);
 
-	MPI_Gatherv(g, 2, MPI_DOUBLE, &y[0], receive_count, receive_pos, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Gatherv(g, 2, MPI_DOUBLE, &y[0], receive_count, receive_pos, MPI_DOUBLE, 0, world);
 
 	if (mpi_manager->is_root()) {
 		x = gaussian_elimination(spike_matrix, y, y_size);
 	}
 
-	MPI_Bcast(&x[0], y_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&x[0], y_size, MPI_DOUBLE, 0, world);
 
 	size_t index = mpi_manager->get_rank() * 2;
 	if (!mpi_manager->is_root()) {

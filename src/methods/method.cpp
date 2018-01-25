@@ -19,15 +19,15 @@ Method::Method(Problem problem) {
 /*
  * public method - compute a solution keeping track of spent time
  */
-void Method::compute(MPImanager *mpi_manager, size_t index) {
+void Method::compute(MPImanager *mpi_manager, MPI_Comm world, size_t index) {
 	double start = 0.0, end = 0.0;
 	
-	MPI_Barrier(MPI_COMM_WORLD);
+	MPI_Barrier(world);
 	start = MPI_Wtime();
 
 	compute_solution(mpi_manager, index);
 
-	MPI_Barrier(MPI_COMM_WORLD);
+	MPI_Barrier(world);
 	end = MPI_Wtime();
 
 	computational_time = double(end - start);

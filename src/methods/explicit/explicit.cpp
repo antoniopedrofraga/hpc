@@ -82,24 +82,24 @@ void Explicit::wait(MPImanager * mpi_manager, size_t i) {
 void Explicit::exchange_data(MPImanager *mpi_manager, size_t i, double * result) {
 	if (mpi_manager->one_process()) return;
 	int rank = mpi_manager->get_rank();
-
+	MPI_Comm world = mpi_manager->get_world();
 	if (i == 0) {
 		if (!mpi_manager->is_root()) {
-			MPI_Isend(&result[i], 1, MPI_DOUBLE, rank - 1, 0, MPI_COMM_WORLD, &requests[0]);
+			MPI_Isend(&result[i], 1, MPI_DOUBLE, rank - 1, 0, world, &requests[0]);
 			if (!request_status[0]) request_status[0] = true;
 		}
 		if (!mpi_manager->is_last()) {
-			MPI_Irecv(&forward, 1, MPI_DOUBLE, rank + 1, 0, MPI_COMM_WORLD, &requests[1]);
+			MPI_Irecv(&forward, 1, MPI_DOUBLE, rank + 1, 0, world, &requests[1]);
 			if (!request_status[1]) request_status[1] = true;
 		}
 	}
 	if (i == size) {
 		if (!mpi_manager->is_last()) {
-			MPI_Isend(&result[i], 1, MPI_DOUBLE, rank + 1, 0, MPI_COMM_WORLD, &requests[2]);
+			MPI_Isend(&result[i], 1, MPI_DOUBLE, rank + 1, 0, world, &requests[2]);
 			if (!request_status[2]) request_status[2] = true;
 		}
 		if (!mpi_manager->is_root()) {
-			MPI_Irecv(&back, 1, MPI_DOUBLE, rank - 1, 0, MPI_COMM_WORLD, &requests[3]);
+			MPI_Irecv(&back, 1, MPI_DOUBLE, rank - 1, 0, world, &requests[3]);
 			if (!request_status[3]) request_status[3] = true;
 		}
 	}

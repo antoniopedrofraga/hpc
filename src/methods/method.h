@@ -97,7 +97,7 @@ public:
 	* Normal public method.
 	* Keeps track of the time to compute a solution
 	*/
-	void compute(MPImanager *mpi_manager, size_t index);
+	void compute(MPImanager *mpi_manager, MPI_Comm world, size_t index);
 
 	void set_value(size_t i, size_t j, double value);
 
