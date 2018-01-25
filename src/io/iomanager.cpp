@@ -51,10 +51,11 @@ void IOManager::export_outputs(Method * analytical, std::vector<Method*> methods
 		output_name = output_path + '/' + name;
 		output_name += "dt=" + deltat_string;
 		std::cout << "Exporting " << name << " method outputs... ";
-		plot_solutions(output_name, analytical, methods[index]);
+		plot_solutions(output_name, analytical, methods[index], number_processes);
 		std::cout << "Finished!" << std::endl;
 	}
 	plot_times(output_path, analytical, methods, number_processes);
+	export_csv(output_path, methods, number_processes);
 	//std::vector<Method*> error_vector(methods.begin() + 1, methods.begin() + 4);
 	//error_tables(output_name, error_vector);
 }
@@ -62,7 +63,7 @@ void IOManager::export_outputs(Method * analytical, std::vector<Method*> methods
 * private plot method - Exports a plot chart which compares the analytical solution with a given solution
 */
 
-void IOManager::plot_solutions(std::string output_name, Method * analytical, Method * method) {
+void IOManager::plot_solutions(std::string output_name, Method * analytical, Method * method, int number_processes) {
 	// Object to export plots
 	Gnuplot gp;
 
@@ -80,7 +81,7 @@ void IOManager::plot_solutions(std::string output_name, Method * analytical, Met
 		time_str = double_to_string(1, time);
 
 		gp << "set output \"" << output_name << "t="  << time_str;
-		gp << ".png\";\n";
+		gp << "p=" << number_processes <<  ".png\";\n";
 		gp << "plot" << gp.file1d(analytical_matrix[index]) << "with lines title \"Analytical\" lw 2 lt rgb \"red\","
 			<< gp.file1d(method_matrix[index]) << "with points title \"" << name << "\" pt 17 ps 1 lw 1" << std::endl;
 	}
@@ -98,11 +99,11 @@ void IOManager::plot_times(std::string output_name, Method * analytical, std::ve
 	std::string deltat_string = double_to_string(3, methods[0]->get_deltat());
 
 	gp << "set tics scale 0; set border 3; set style line 1 lc rgb '#FFA500' lt 1 lw 2 pt 7 pi -1 ps 1.5; set clip two; set ylabel \"time [s]\";set xlabel \"\"; set term png; set xtics (\"Analytical\" 0, \"Laasonen\" 1, \"Crank Nicholson\" 2, \"FTCS\" 3)\n";
-	gp << "set output \"" << output_path << "/times" << number_processes << "dt=" << deltat_string << ".png\";\n";
+	gp << "set output \"" << output_path << "/timesdt=" << deltat_string << "p=" << number_processes << ".png\";\n";
 	gp << "plot" << gp.file1d(times) << " notitle with linespoint ls 1" << std::endl;
 }
 
-void IOManager::export_analytical(Method * analytical) {
+void IOManager::export_analytical(Method * analytical, int number_processes) {
 	// Object to export plots
 	Gnuplot gp;
 
@@ -118,9 +119,21 @@ void IOManager::export_analytical(Method * analytical) {
 		time = (double)index / 10.0;
 		time_str = double_to_string(1, time);
 		gp << "set output \"./outputs/analytical" + time_str;
-		gp << ".png\";\n";
+		gp << "p=" << number_processes <<  ".png\";\n";
 		gp << "plot" << gp.file1d(analytical_matrix[index]) << "with lines title \"Analytical\" lw 2 lt rgb \"red\""
 			<< std::endl;
+	}
+}
+
+void IOManager::export_csv(std::string output_name, std::vector<Method*> methods, int number_processes) {
+	double time = methods[0]->get_deltat();
+	std::string time_str = double_to_string(3, time);
+	std::ofstream out;
+	for (size_t i = 0; i < methods.size(); i++) {
+		std::string name = output_name + "/csvs/" + methods[i]->get_name() + "dt=" + time_str + ".csv";
+		out.open(name, std::ios_base::app);
+		out << number_processes << " " << methods[i]->get_computational_time() << std::endl;
+		out.close();
 	}
 }
 

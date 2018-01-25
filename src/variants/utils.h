@@ -25,7 +25,7 @@ const double PI = std::atan(1) * 4; /**< Macro double. Approximated value of PI.
 const std::string OUTPUT_PATH = "./outputs"; /**< Macro string. Default outputs path. */
 
 const std::string ANALYTICAL = "Analytical"; /**< Macro string. Forward in Time and Central in Space method name. */
-const std::string FORWARD_TIME_CENTRAL_SPACE = "Forward Time Central Space"; /**< Macro string. Forward in Time and Central in Space method name. */
+const std::string FORWARD_TIME_CENTRAL_SPACE = "Forward-Time-Central-Space"; /**< Macro string. Forward in Time and Central in Space method name. */
 const std::string RICHARDSON = "Richardson"; /**< Macro string. Richardson method name. */
 const std::string DUFORT_FRANKEL = "DuFort-Frankel"; /**< Macro string. DuFort-Frankel method name. */
 const std::string LAASONEN = "Laasonen"; /**< Macro string. Laasonen method name. */

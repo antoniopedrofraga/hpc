@@ -31,7 +31,7 @@ private:
 	* @param Method* analytical The analytical solution
 	* @param Method* method Any method solution
 	*/
-	void plot_solutions(std::string output_name, Method * analytical, Method * method);
+	void plot_solutions(std::string output_name, Method * analytical, Method * method, int number_processes);
 
 	void plot_times(std::string output_name, Method * analytical, std::vector<Method*> methods, int number_processes);
 
@@ -41,6 +41,8 @@ private:
 	* @param vector<Method*> vector of methods to plot the second norm
 	*/
 	void error_tables(std::string output_name, std::vector<Method*> method);
+
+	void export_csv(std::string output_name, std::vector<Method*> methods, int number_processes);
 
 	// AUX METHODS
 
@@ -69,7 +71,7 @@ public:
 	void export_outputs(Method * analytical, std::vector<Method*> methods, int number_processes);
 
 
-	void export_analytical(Method * analytical);
+	void export_analytical(Method * analytical, int number_processes);
 };
 
 #endif

@@ -38,7 +38,7 @@ int main(int argc, char * argv[]) {
 			if (mpi_manager->is_root()) {
 				std::cout << "Collecting results." << std::endl;
 				mpi_manager->collect_results(solutions);
-				io_manager.export_analytical(solutions[0]);
+				io_manager.export_analytical(solutions[0], mpi_manager->get_number_processes());
 				std::vector<Method*> methods(solutions.begin() + 1, solutions.end());
 				io_manager.export_outputs(solutions[0], methods, mpi_manager->get_number_processes());
 			} else {
