@@ -83,7 +83,7 @@ void IOManager::plot_solutions(std::string output_name, Method * analytical, Met
 		gp << "set output \"" << output_name << "t="  << time_str;
 		gp << "p=" << number_processes <<  ".png\";\n";
 		gp << "plot" << gp.file1d(analytical_matrix[index]) << "with lines title \"Analytical\" lw 2 lt rgb \"red\","
-			<< gp.file1d(method_matrix[index]) << "with points title \"" << name << "\" pt 17 ps 1 lw 1" << std::endl;
+			<< gp.file1d(method_matrix[index]) << "with points title \"" << name << "\" pt 17 ps 0.5 lw 1" << std::endl;
 	}
 }
 
@@ -127,7 +127,7 @@ void IOManager::export_analytical(Method * analytical, int number_processes) {
 
 void IOManager::export_csv(std::string output_name, std::vector<Method*> methods, int number_processes) {
 	double time = methods[0]->get_deltat();
-	std::string time_str = double_to_string(5, time);
+	std::string time_str = double_to_string(3, time);
 	std::ofstream out;
 	for (size_t i = 0; i < methods.size(); i++) {
 		std::string name = output_name + "/csvs/" + methods[i]->get_name() + "dt=" + time_str + ".csv";
