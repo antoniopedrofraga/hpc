@@ -127,7 +127,7 @@ void IOManager::export_analytical(Method * analytical, int number_processes) {
 
 void IOManager::export_csv(std::string output_name, std::vector<Method*> methods, int number_processes) {
 	double time = methods[0]->get_deltat();
-	std::string time_str = double_to_string(3, time);
+	std::string time_str = double_to_string(5, time);
 	std::ofstream out;
 	for (size_t i = 0; i < methods.size(); i++) {
 		std::string name = output_name + "/csvs/" + methods[i]->get_name() + "dt=" + time_str + ".csv";
