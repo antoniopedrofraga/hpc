@@ -31,6 +31,8 @@ protected:
 	double q; /**< Protected double q. A coeficient which value depends of way the equation is written, it may vary from method to method. */
 	bool last_iteration;
 
+	bool lapacke;
+
 	MPI_Request requests[4];
 	bool request_status[4];
 public:
@@ -102,6 +104,10 @@ public:
 	void set_value(size_t i, size_t j, double value);
 
 	void compute_norms(Matrix analytical_matrix);
+
+	void enable_lapacke();
+
+	bool is_lapacke();
 
 	// PUBLIC MUTATOR METHODS
 

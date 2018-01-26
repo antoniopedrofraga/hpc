@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.11.3)  25 JAN 2018 04:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.11.3)  26 JAN 2018 01:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1426,11 +1426,7 @@ File: ts1enc.dfu 2015/12/03 v1.1r UTF-8 support for inputenc
    defining Unicode char U+2026 (decimal 8230)
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
-) (./main.aux
-
-LaTeX Warning: Label `table:1' multiply defined.
-
-)
+) (./main.aux)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 83.
@@ -1448,7 +1444,8 @@ LaTeX Font Info:    ... okay on input line 83.
 LaTeX Font Info:    Checking defaults for FML/futm/m/it on input line 83.
 LaTeX Font Info:    Try loading font information for FML+futm on input line 83.
 
- (/usr/share/texlive/texmf-dist/tex/latex/fourier/fmlfutm.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/fourier/fmlfutm.fd
 File: fmlfutm.fd 2004/10/30 Fontinst v1.926 font definitions for FML/futm.
 )
 LaTeX Font Info:    ... okay on input line 83.
@@ -1660,7 +1657,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 181--183
  []
 
 [5]
-LaTeX Font Info:    Try loading font information for TS1+futs on input line 196
+LaTeX Font Info:    Try loading font information for TS1+futs on input line 197
 .
  (/usr/share/texlive/texmf-dist/tex/latex/fourier/ts1futs.fd
 File: ts1futs.fd 2004/03/26 Fontinst v1.926 font definitions for TS1/futs.
@@ -1670,144 +1667,107 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 10000) in paragraph at lines 201--203
+Underfull \hbox (badness 10000) in paragraph at lines 202--204
 
  []
 
 [6] <FTCS.png, id=27, 519.44063pt x 225.09094pt>
 File: FTCS.png Graphic file (type png)
  <use FTCS.png>
-Package pdftex.def Info: FTCS.png used on input line 235.
+Package pdftex.def Info: FTCS.png used on input line 236.
 (pdftex.def)             Requested size: 271.7835pt x 117.77266pt.
 
 <fcts_comm1.png, id=28, 643.40375pt x 137.51375pt>
 File: fcts_comm1.png Graphic file (type png)
  <use fcts_comm1.png>
-Package pdftex.def Info: fcts_comm1.png used on input line 243.
+Package pdftex.def Info: fcts_comm1.png used on input line 244.
 (pdftex.def)             Requested size: 317.07614pt x 67.77051pt.
 
 <fcts_comm2.png, id=30, 643.40375pt x 130.4875pt>
 File: fcts_comm2.png Graphic file (type png)
  <use fcts_comm2.png>
-Package pdftex.def Info: fcts_comm2.png used on input line 251.
+Package pdftex.def Info: fcts_comm2.png used on input line 252.
 (pdftex.def)             Requested size: 317.07614pt x 64.30777pt.
- [7 <./FTCS.png (PNG copy)> <./fcts_comm1.png>]
-<laasonen.png, id=36, 436.63126pt x 195.73125pt>
+ [7 <./FTCS.png (PNG copy)>] <laasonen.png, id=35, 436.63126pt x 195.73125pt>
 File: laasonen.png Graphic file (type png)
- <use laasonen.png>
-Package pdftex.def Info: laasonen.png used on input line 269.
-(pdftex.def)             Requested size: 181.18784pt x 81.22096pt.
 
-<crank-nicholson.png, id=37, 435.12563pt x 195.73125pt>
+<use laasonen.png>
+Package pdftex.def Info: laasonen.png used on input line 270.
+(pdftex.def)             Requested size: 181.18784pt x 81.22096pt.
+ <crank-nicholson.png, id=36, 435.12563pt x 195.73125pt>
 File: crank-nicholson.png Graphic file (type png)
 
 <use crank-nicholson.png>
-Package pdftex.def Info: crank-nicholson.png used on input line 274.
+Package pdftex.def Info: crank-nicholson.png used on input line 275.
 (pdftex.def)             Requested size: 181.18784pt x 81.5047pt.
- [8 <./fcts_comm2.png> <./laasonen.png (PNG copy)> <./crank-nicholson.png (PNG 
-copy)>]
+ [8 <./fcts_comm1.png> <./fcts_comm2.png>]
 <spikedivision.png, id=42, 493.845pt x 333.245pt>
 File: spikedivision.png Graphic file (type png)
  <use spikedivision.png>
-Package pdftex.def Info: spikedivision.png used on input line 291.
-(pdftex.def)             Requested size: 308.01485pt x 207.84538pt.
+Package pdftex.def Info: spikedivision.png used on input line 292.
+(pdftex.def)             Requested size: 249.13371pt x 168.11195pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 296--298
-
- []
-
-[9 <./spikedivision.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 327--329
+Underfull \hbox (badness 10000) in paragraph at lines 297--299
 
  []
 
-<Sxy.png, id=48, 493.845pt x 333.245pt>
+[9 <./laasonen.png (PNG copy)> <./crank-nicholson.png (PNG copy)> <./spikedivis
+ion.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 328--330
+
+ []
+
+<Sxy.png, id=47, 493.845pt x 333.245pt>
 File: Sxy.png Graphic file (type png)
  <use Sxy.png>
-Package pdftex.def Info: Sxy.png used on input line 370.
-(pdftex.def)             Requested size: 308.01485pt x 207.84538pt.
- [10 <./Sxy.png>]
-LaTeX Font Info:    Calculating math sizes for size <6.5> on input line 395.
-LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 5.97998pt on input line 395.
-LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 4.54474pt on input line 395.
-LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 3.58803pt on input line 395.
-LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 5.97998pt on input line 395.
-LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 4.54474pt on input line 395.
-LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 3.58803pt on input line 395.
+Package pdftex.def Info: Sxy.png used on input line 371.
+(pdftex.def)             Requested size: 249.13371pt x 168.11195pt.
+ [10]
+<ftcs.png, id=52, 481.8pt x 361.35pt>
+File: ftcs.png Graphic file (type png)
+ <use ftcs.png>
+Package pdftex.def Info: ftcs.png used on input line 396.
+(pdftex.def)             Requested size: 126.83044pt x 95.12321pt.
 
-<DuFort-Frankelt_0_5.png, id=53, 481.8pt x 361.35pt>
-File: DuFort-Frankelt_0_5.png Graphic file (type png)
+<laa.png, id=53, 481.8pt x 361.35pt>
+File: laa.png Graphic file (type png)
+ <use laa.png>
+Package pdftex.def Info: laa.png used on input line 400.
+(pdftex.def)             Requested size: 126.83044pt x 95.12321pt.
 
-<use DuFort-Frankelt_0_5.png>
-Package pdftex.def Info: DuFort-Frankelt_0_5.png used on input line 412.
-(pdftex.def)             Requested size: 226.48395pt x 169.86209pt.
+<cn.png, id=54, 481.8pt x 361.35pt>
+File: cn.png Graphic file (type png)
+ <use cn.png>
+Package pdftex.def Info: cn.png used on input line 404.
+(pdftex.def)             Requested size: 126.83044pt x 95.12321pt.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 413.
+(Font)              scaled to size 10.07397pt on input line 406.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 413.
+(Font)              scaled to size 7.63599pt on input line 406.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 5.51999pt on input line 413.
+(Font)              scaled to size 5.51999pt on input line 406.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 413.
+(Font)              scaled to size 10.07397pt on input line 406.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 413.
+(Font)              scaled to size 7.63599pt on input line 406.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 5.51999pt on input line 413.
- [11]
-<Laasonent_0_4dt_0_010.png, id=57, 481.8pt x 361.35pt>
-File: Laasonent_0_4dt_0_010.png Graphic file (type png)
-
-<use Laasonent_0_4dt_0_010.png>
-Package pdftex.def Info: Laasonent_0_4dt_0_010.png used on input line 424.
+(Font)              scaled to size 5.51999pt on input line 406.
+ [11 <./Sxy.png> <./ftcs.png> <./laa.png> <./cn.png>] <times.png, id=62, 481.8p
+t x 361.35pt>
+File: times.png Graphic file (type png)
+ <use times.png>
+Package pdftex.def Info: times.png used on input line 419.
 (pdftex.def)             Requested size: 181.18784pt x 135.88637pt.
 
-<Crank-Nicholsont_0_4.png, id=58, 481.8pt x 361.35pt>
-File: Crank-Nicholsont_0_4.png Graphic file (type png)
-
-<use Crank-Nicholsont_0_4.png>
-Package pdftex.def Info: Crank-Nicholsont_0_4.png used on input line 429.
+<speedup.png, id=63, 481.8pt x 361.35pt>
+File: speedup.png Graphic file (type png)
+ <use speedup.png>
+Package pdftex.def Info: speedup.png used on input line 424.
 (pdftex.def)             Requested size: 181.18784pt x 135.88637pt.
- <norms.png, id=59, 481.8pt x 361.35pt>
-File: norms.png Graphic file (type png)
+ [12 <./times.png> <./speedup.png>] [13]
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 448.
 
-<use norms.png>
-Package pdftex.def Info: norms.png used on input line 440.
-(pdftex.def)             Requested size: 181.18784pt x 135.88637pt.
- <default_deltat_times.png, id=60, 481.8pt x 361.35pt>
-File: default_deltat_times.png Graphic file (type png)
-
-<use default_deltat_times.png>
-Package pdftex.def Info: default_deltat_times.png used on input line 445.
-(pdftex.def)             Requested size: 181.18784pt x 135.88637pt.
- [12 <./DuFort-Frankelt_0_5.png> <./Laasonent_0_4dt_0_010.png> <./Crank-Nichols
-ont_0_4.png>]
-
-LaTeX Warning: Citation `step_size' on page 13 undefined on input line 454.
-
-
-LaTeX Warning: Citation `hoffman' on page 13 undefined on input line 454.
-
-LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 6.25598pt on input line 461.
-LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 6.25598pt on input line 461.
-<laasonen_times.png, id=67, 481.8pt x 361.35pt>
-File: laasonen_times.png Graphic file (type png)
- <use laasonen_times.png>
-Package pdftex.def Info: laasonen_times.png used on input line 477.
-(pdftex.def)             Requested size: 271.7835pt x 203.84334pt.
-
-[13 <./norms.png> <./default_deltat_times.png>] [14 <./laasonen_times.png>]
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 498.
-
-
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
+ (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 Package microtype Info: Loading generic settings for font family
@@ -1815,41 +1775,35 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 1596) in paragraph at lines 504--505
+Underfull \hbox (badness 1596) in paragraph at lines 454--455
 \T1/cmtt/m/n/12 crhc . illinois . edu / shared / Papers / Chang-[]Thesis-[]2014
  . pdf$\T1/futs/m/n/12 (+20) > [Ac-cessed 25 Jan-
  []
 
-[15] 
+[14] 
 AED: lastpage setting LastPage
-[16] (./main.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: There were multiply-defined labels.
-
- ) 
+[15] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 12075 strings out of 494910
- 174892 string characters out of 6179836
- 417825 words of memory out of 5000000
- 14793 multiletter control sequences out of 15000+600000
- 184405 words of font info for 322 fonts, out of 8000000 for 9000
+ 12000 strings out of 494910
+ 173178 string characters out of 6179836
+ 420825 words of memory out of 5000000
+ 14737 multiletter control sequences out of 15000+600000
+ 154236 words of font info for 284 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 42i,16n,58p,911b,424s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/antonio/.texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1200.600pk>{/usr/s
-hare/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-d
-ist/fonts/type1/public/fourier/fourier-mex.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/fourier/fourier-ml.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/fourier/fourier-mlit.pfb></usr/share/texlive/texmf-dist/fonts/type1
-/public/fourier/fourier-ms.pfb></usr/share/texlive/texmf-dist/fonts/type1/adobe
-/utopia/putb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/adobe/utopia/putr
-8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/adobe/utopia/putri8a.pfb>
-Output written on main.pdf (16 pages, 234539 bytes).
+ 42i,12n,58p,911b,417s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </home/antonio/.texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1
+200.600pk>{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/shar
+e/texlive/texmf-dist/fonts/type1/public/fourier/fourier-mex.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/fourier/fourier-ml.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/fourier/fourier-mlit.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/fourier/fourier-ms.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/adobe/utopia/putb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+adobe/utopia/putr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/adobe/utopia
+/putri8a.pfb>
+Output written on main.pdf (15 pages, 245032 bytes).
 PDF statistics:
- 147 PDF objects out of 1000 (max. 8388607)
- 64 compressed objects within 1 object stream
+ 142 PDF objects out of 1000 (max. 8388607)
+ 62 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 42562 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 40509 words of extra memory for PDF output out of 42996 (max. 10000000)
 

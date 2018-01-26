@@ -1,5 +1,5 @@
 all: ./*.cpp
-	g++ -std=c++14 -W ./*.cpp -o testing
+	g++ -o test_lapack test_lapack.cpp -llapack
 install:
 	sudo apt-get install libboost-iostreams-dev libboost-system-dev libboost-filesystem-dev
 run:

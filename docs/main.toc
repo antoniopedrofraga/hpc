@@ -3,10 +3,9 @@
 \contentsline {subsection}{Problem definition}{5}
 \contentsline {subsection}{Analysis}{5}
 \contentsline {section}{Procedures}{6}
-\contentsline {subsection}{Explicit Scheme}{6}
+\contentsline {subsection}{Explicit Scheme}{7}
 \contentsline {subsubsection}{Forward in Time Central in Space}{7}
 \contentsline {subsection}{Implicit Schemes}{8}
 \contentsline {section}{Results \& Discussion}{11}
-\contentsline {subsection}{Laasonen Implicit Scheme: study of time step variation}{13}
-\contentsline {section}{Conclusions}{14}
-\contentsline {section}{Appendices}{16}
+\contentsline {section}{Conclusions}{13}
+\contentsline {section}{Appendices}{15}

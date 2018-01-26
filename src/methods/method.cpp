@@ -12,6 +12,8 @@ Method::Method() {}
 Method::Method(Problem problem) {
 	this->problem = problem;
 	this->last_iteration = false;
+	this->lapacke = false;
+
 	for (size_t i = 0; i < 4; i++)
 		this->request_status[i] = false;
 }
@@ -100,4 +102,12 @@ void Method::set_value(size_t i, size_t j, double value) {
 	problem.set_value(i, j, value);
 }
 
+void Method::enable_lapacke() {
+	this->lapacke = true;
+}
+
+
+bool Method::is_lapacke() {
+	return lapacke;
+}
 

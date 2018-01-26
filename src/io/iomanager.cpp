@@ -73,7 +73,7 @@ void IOManager::plot_solutions(std::string output_name, Method * analytical, Met
 	unsigned int cols = method_matrix.getNcols();
 	double time;
 	std::string time_str, name = method->get_name();
-
+	std::string lapacke_str = method->is_lapacke() ? "_lapacke" : "";
 	// defining gnuplot configuration with the correct syntax
 	gp << "set key on box; set tics scale 0; set border 3; set ylabel \"Temperature [ºF]\";set xlabel \"x [ft]\"; set yrange [90:310]; set term png; set xtics (\"0\" 0, \"0.5\"" << cols / 2 << ", \"1\"" << cols - 1 << ")\n";
 	for (unsigned int index = 1; index < rows; index++) {
@@ -81,7 +81,7 @@ void IOManager::plot_solutions(std::string output_name, Method * analytical, Met
 		time_str = double_to_string(1, time);
 
 		gp << "set output \"" << output_name << "t="  << time_str;
-		gp << "p=" << number_processes <<  ".png\";\n";
+		gp << "p=" << number_processes << lapacke_str << ".png\";\n";
 		gp << "plot" << gp.file1d(analytical_matrix[index]) << "with lines title \"Analytical\" lw 2 lt rgb \"red\","
 			<< gp.file1d(method_matrix[index]) << "with points title \"" << name << "\" pt 17 ps 0.5 lw 1" << std::endl;
 	}
@@ -96,10 +96,11 @@ void IOManager::plot_times(std::string output_name, Method * analytical, std::ve
 		times.push_back(methods[i]->get_computational_time());
 	}
 
+	std::string lapacke_str = methods[1]->is_lapacke() ? "_lapacke" : "";
 	std::string deltat_string = double_to_string(3, methods[0]->get_deltat());
 
 	gp << "set tics scale 0; set border 3; set style line 1 lc rgb '#FFA500' lt 1 lw 2 pt 7 pi -1 ps 1.5; set clip two; set ylabel \"time [s]\";set xlabel \"\"; set term png; set xtics (\"Analytical\" 0, \"Laasonen\" 1, \"Crank Nicholson\" 2, \"FTCS\" 3)\n";
-	gp << "set output \"" << output_path << "/timesdt=" << deltat_string << "p=" << number_processes << ".png\";\n";
+	gp << "set output \"" << output_path << "/timesdt=" << deltat_string << "p=" << number_processes << lapacke_str << ".png\";\n";
 	gp << "plot" << gp.file1d(times) << " notitle with linespoint ls 1" << std::endl;
 }
 
@@ -128,9 +129,10 @@ void IOManager::export_analytical(Method * analytical, int number_processes) {
 void IOManager::export_csv(std::string output_name, std::vector<Method*> methods, int number_processes) {
 	double time = methods[0]->get_deltat();
 	std::string time_str = double_to_string(3, time);
+	std::string lapacke_str = methods[1]->is_lapacke() ? "_lapacke" : "";
 	std::ofstream out;
 	for (size_t i = 0; i < methods.size(); i++) {
-		std::string name = output_name + "/csvs/" + methods[i]->get_name() + "dt=" + time_str + ".csv";
+		std::string name = output_name + "/csvs/" + methods[i]->get_name() + "dt=" + time_str + lapacke_str + ".csv";
 		out.open(name, std::ios_base::app);
 		out << number_processes << " " << methods[i]->get_computational_time() << std::endl;
 		out.close();

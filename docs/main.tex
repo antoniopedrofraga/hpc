@@ -191,7 +191,8 @@ $
 \section*{Procedures}
 \addcontentsline{toc}{section}{Procedures}
 
-Three different schemes/methods were used to compute a solution for the given problem, sequentially and in parallel. One of them is an explicit schemes, \textbf{Forward in Time, Central in Space}, and two of them are implicit schemes, \textbf{Laasonen Simple Implicit} and \textbf{Crank-Nicholson}. Two pairs \textbf{space} and \textbf{time} steps were studied,
+\par Every solution was computed on \textbf{Delta}, a supercomputer located at Cranfield University. The computational time was measured by using the \textbf{MPI Wtime} call, and assuring that every process was entering and leaving the computation of a given method at the same time. 
+\par Three different schemes/methods were used to compute a solution for the given problem, sequentially and in parallel. One of them is an explicit schemes, \textbf{Forward in Time, Central in Space}, and two of them are implicit schemes, \textbf{Laasonen Simple Implicit} and \textbf{Crank-Nicholson}. Two pairs \textbf{space} and \textbf{time} steps were studied,
 \begin{itemize}[noitemsep] 
 \item $ \Delta t = 0.1 $ and $ \Delta x = 0.5$
 \item $ \Delta t = 0.001 $ and $ \Delta x = 0.005$
@@ -276,7 +277,7 @@ It was seen in the previous work\cite{fraga} that these schemes can be written i
 \end{minipage}
 \end{figure}
 
-The time step computation of these schemes requires that a special form of a linear system of equations to be solved. This system $Ax = b$ contains a \textbf{tridiagonal matrix}, the matrix \textbf{A}. In case of a sequential code, the \textbf{Thomas Algorithm} is the most efficient solution. With a parallel code, the \textbf{spike} algorithm can be used to solve dependencies among processes. The results can be achieved by splitting the computation methodology into three different phases.
+The time step computation of these schemes requires that a special form of a linear system of equations to be solved. This system $Ex = b$ contains a \textbf{tridiagonal matrix}, the matrix \textbf{E}, which can be divided into two different matrices, \textbf{A} and \textbf{S}\cite{spike}. In case of a sequential code, the \textbf{Thomas Algorithm} is the most efficient solution. With a parallel code, the \textbf{spike} algorithm can be used to solve dependencies among processes. The results can be achieved by splitting the computation methodology into three different phases.
 
 \begin{itemize}[noitemsep] 
 \item Solve $\textbf{Ay = b}$ in parallel.
@@ -288,7 +289,7 @@ The time step computation of these schemes requires that a special form of a lin
 \newline
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=.68\linewidth]{spikedivision.png}
+  \includegraphics[width=.55\linewidth]{spikedivision.png}
   \captionof{figure}{Division of main matrix in blocks.}
 \end{figure}
 
@@ -367,7 +368,7 @@ $
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=.68\linewidth]{Sxy.png}
+  \includegraphics[width=.55\linewidth]{Sxy.png}
   \captionof{figure}{Sx = y system of equations.}
 \end{figure}
 
@@ -385,98 +386,47 @@ X_{P - 1} = Y_{P - 1} - W X_{P - 2}^b
 
 \section*{Results \& Discussion}
 \addcontentsline{toc}{section}{Results \& Discussion}
-\par The results of the four methods, \textbf{Richardson}, \textbf{DuFort-Frankel}, \textbf{Laasonen Simple Implicit} and \textbf{Crank-Nicholson} can be seen in the following figures/tables. These results were used to analyze each solution quantitatively and qualitatively. In most of the plot charts, the obtained solution was compared to the analytical solution so that it would be possible to realize whether the solution was a good approximation or not. Notice that the next results are regarding to the "default" values of time and space steps, $\Delta t = 0.01$ and $\Delta x = 0.05$. 
 
-\begin{table}[!htb]
-\centering
-\caption{Richardson method error table.}
-\label{table:1}
-\fontsize{6.5}{18}\selectfont
-\begin{tabular}{|| c || c | c | c | c | c | c | c | c | c | c | c ||} 
- \hline
- \diagbox[width=5em]{t}{x} & 0.10 & 0.20 & 0.30 & 0.40 & 0.50 & 0.60 & 0.70 & 0.80 & 0.90 \\ [0.5ex] 
- \hline\hline
- 0.1 & 1.05136e+06 & 631856 & 123707 & 8417.73 & 300.81 & 8417.73 & 123707 & 631856 & 1.05136e+06 \\ 
- 0.2 & 1.33245e+11 & 1.39e+11 & 7.02854e+10 & 2.06123e+10 & 6.93136e+09 & 2.06123e+10 & 7.02854e+10 & 1.39e+11 & 1.33245e+11 \\
- 0.3 & 2.14659e+16 & 2.74969e+16 & 1.97012e+16 & 9.88337e+15 & 5.98161e+15 & 9.88337e+15 & 1.97012e+16 & 2.74969e+16 & 2.14659e+16  \\
- 0.4 & 3.91917e+21 & 5.60267e+21 & 4.87086e+21 & 3.31281e+21 & 2.58429e+21 & 3.31281e+21 & 4.87086e+21 & 5.60267e+21 & 3.91917e+21 \\ 
- 0.5 & 7.74272e+26 & 1.19047e+27 & 1.18021e+27 & 9.72231e+26 & 8.60626e+26 & 9.72231e+26 & 1.18021e+27 & 1.19047e+27 & 7.74272e+26  \\[1ex] 
- \hline
-\end{tabular}
-\end{table}
-
-\par By examining \textbf{Table 2}, it could be concluded that the solution given by the Richardson method  was considerably different from the analytical solution. This was due to the fact that this method is declared as \textbf{unconditionally unstable}.  As referred before, when a method is declared unstable, the error grows as the time advances. The error growth was responsible for obtaining a different solution, or a solution to a different problem. The mathematical calculations regarding the stability and accuracy properties of this method can be found under the appendix section. 
+\par In this section the results of the experiments were analysed. Starting by observing \textbf{Figure 8}, it can be seen that the solution of the \textbf{explicit} scheme is not accurate at these conditions. Notice that this solution was computed by \textbf{4} processes, with a $ \Delta t = 0.001 $ and $ \Delta x = 0.005$. This phenomenon can be explained by making the stability analysis of this method\cite{fraga}. On this conditions, this method is unstable, therefore it can not present an approximated solution. It can be seen that the implicit schemes, however, were able to present good results.
 
 \begin{figure}[!htb]
+\centering
+\begin{minipage}{.28\textwidth}
   \centering
-  \includegraphics[width=.5\linewidth]{DuFort-Frankelt_0_5.png}
-  \captionof{figure}{DuFort-Frankel's solution at $t= 0.5$.}
+  \includegraphics[width=1\linewidth]{ftcs.png}
+\end{minipage}%
+\begin{minipage}{.28\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{laa.png}
+\end{minipage} %
+\begin{minipage}{.28\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{cn.png}
+\end{minipage}
+\captionof{figure}{FTCS, Laasonen and Crank-Nicholson solutions calculated with 4 processors, at t = 0.4, with $ \Delta t = 0.001 $ and $ \Delta x = 0.005$.}
 \end{figure}
 
-\par When looking at \textbf{Figure 7}, it can be observed that the DuFort-Frankel solution is quite approximated to the real solution. This scheme, as it could be observed at \textbf{Figure 11}, is more time efficient comparing to the implicit unconditionally stable methods, the only disadvantage is the fact that it requires a different method for the first iteration.
+\par As referred, it was possible to measure the computation time of a given method. The results for a sequential calculations were quite similar to the previous results\cite{fraga}. The execution time of a solution for \textbf{$ \Delta t = 0.001 $ and $ \Delta x = 0.005$} did was stable as the number of processes were increased. This happened because the \textbf{software} implementation allowed only one process to work. Notice that under these conditions, each time step contains \textbf{three} different values. \textbf{Two} of those values are known, as they are considered as \textbf{initial conditions}. Therefore, there was only one value to be computed for every time step. 
 
-\par Similarly of what could be concluded on DuFort-Frankel results, by observing \textbf{Figure 9} and \textbf{Figure 8}, it can also be deducted that these are good solutions. These schemes, Crank-Nicholson and Laasonen, are unconditionally stable as well. Therefore good results were expected.
+\par The results of a parallel execution for the \textbf{$ \Delta t = 0.001 $ and $ \Delta x = 0.005$} can be observed on \textbf{Figure 9}. Under these conditions, \textbf{199} values had to be computed for every time step. By observing the figure, and comparing the sequential solution execution time of the methods, we can see a continuous improvement of the \textbf{Forward in Time, Central in Space} scheme. This improvement couldn't be replicated by the implicit schemes. The execution time of these schemes started to increase when the solution was calculated by more than \textbf{four} processes. 
+
+\par It was referred that the dependencies among the several processes computing the \textbf{Forward in Time, Central in Space} solution were handled using \textbf{non-blocking} communication. Whereas the implicit schemes were using a blocking communication to solve their dependencies. A blocking communication was used because the \textbf{second} phase of the \textbf{spike} algorithm required a sequential flow of data. Thereby, one can conclude that this phase was a major bottleneck while measuring the execution time of these solutions. 
 
 \begin{figure}[!htb]
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-  \includegraphics[width=.8\linewidth]{Laasonent_0_4dt_0_010.png}
-  \captionof{figure}{Laasonen's solution at $t= 0.4$.}
+  \includegraphics[width=0.8\linewidth]{times.png}
+  \captionof{figure}{Comparison of execution times.}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-  \includegraphics[width=.8\linewidth]{Crank-Nicholsont_0_4.png}
-  \captionof{figure}{Crank-Nicholson's solution at $t= 0.4$.}
+  \includegraphics[width=.8\linewidth]{speedup.png}
+  \captionof{figure}{Speedup of each method.}
 \end{minipage}
 \end{figure}
 
-\par In other hand, when a quantitative analysis was done, it could be seen that the Crank Nicholson scheme is more accurate than the Laasonen and DuFort-Frankel methods. By looking at \textbf{Figure 10}, it can be observed that the second norm value of the \textbf{Error matrix} of this scheme is smaller than the values obtained by the other methods \textbf{Error Matrices}.
-
-\begin{figure}[!htb]
-\centering
-\begin{minipage}{.5\textwidth}
-  \centering
-  \includegraphics[width=.8\linewidth]{norms.png}
-  \captionof{figure}{2nd norm values of Error Matrices.}
-\end{minipage}%
-\begin{minipage}{.5\textwidth}
-  \centering
-  \includegraphics[width=.8\linewidth]{default_deltat_times.png}
-  \captionof{figure}{Computational times of stable methods.}
-\end{minipage}
-\end{figure}
-
-\subsection*{Laasonen Implicit Scheme: study of time step variation}
-\addcontentsline{toc}{subsection}{Laasonen Implicit Scheme: study of time step variation}
-
-\par Laasonen Implicit Scheme is an unconditionally stable scheme to solve Parabolic Partial Differential Equations. Therefore, with the right time and space step, there's almost no error related to the development of its results throughout the time advancement. 
-\par A reduction on these steps led to a higher computational time, since there's more calculations to be made. Whereas steps with higher values led to more inaccurate results\cite{step_size}. This phenomenon could be explained with a concept that was introduced earlier, the \textbf{truncation error}\cite{hoffman}. This error can only be avoided with exact calculations, but can be reduced by applying a larger number of smaller intervals or steps. As referred before, different results of this method were studied by changing the time step size. The space step was maintained, $\Delta x = 0.05$.
-
-\begin{table}[!htb]
-\centering
-\caption{Laasonen method error table for the several $\Delta t$ at $t = 0.5$}
-\label{table:1}
-\fontsize{8}{18}\selectfont
-\begin{tabular}{|| c || c | c | c | c | c | c | c | c | c | c | c ||} 
- \hline
- \diagbox[width=5em]{$\Delta t$}{x} & 0.10 & 0.20 & 0.30 & 0.40 & 0.50 & 0.60 & 0.70 & 0.80 & 0.90 \\ [0.5ex] 
- \hline\hline
- 0.01 & 0.288694 & 0.385764 & 0.255427 & 0.0405061 & -0.0611721 & 0.0405061 & 0.255427 & 0.385764 & 0.288694 \\ 
- 0.025 & 0.738044 & 1.0344 & 0.805442 & 0.368491 & 0.157551 & 0.368491 & 0.805442 & 1.0344 & 0.738044 \\
- 0.05 & 1.53627 & 2.15669 & 1.71375 & 0.864487 & 0.457364 & 0.864487 & 1.71375 & 2.15669 & 1.53627  \\
- 0.1 & 3.29955 & 4.49523 & 3.46045 & 1.7082 & 0.898726 & 1.7082 & 3.46045 & 4.49523 & 3.29955 \\ [1ex] 
- \hline
-\end{tabular}
-\end{table}
-
-\par \textbf{Table 3} and \textbf{figure 12} could support the previous affirmations.  While observing \textbf{table 3}, it could be seen that the error is larger for bigger time steps, as it was expected. Whereas when observing \textbf{figure 12}, it can be identified a reduction in computational time as the \textbf{time step} becomes larger.
-
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=.6\linewidth]{laasonen_times.png}
-  \captionof{figure}{Laasonen method computational times for the several $\Delta t$.}
-\end{figure}
+\par However, while observing \textbf{Figure 10}, it could be seen that the \textbf{speedup} value of the \textbf{Forward in Time, Central in Space} scheme is far from its optimal value. In fact this value is significantly low. A larger \textbf{speedup} value would be seen while computing a larger grid. In such small system, the bottleneck of communications is high, and therefore one can not obtain big improvements. An experiment with a system of \textbf{thousands} of elements in each time step would contribute to a higher \textbf{speedup}.
 
 \pagebreak
 \section*{Conclusions}

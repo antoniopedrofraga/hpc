@@ -23,7 +23,7 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 
 	double delta_t = problem.get_deltat(), time;
 	double * current_step = (double*) malloc((size + 1) * sizeof(double)), * previous_step = (double*) malloc((size + 1) * sizeof(double)), 
-	*r, *x, *y;
+	*r, *x;
 
 	back = mpi_manager->is_root() ? SURFACE_TEMPERATURE : INITIAL_TEMPERATURE, forward = mpi_manager->is_last() ? SURFACE_TEMPERATURE : INITIAL_TEMPERATURE;
 	v = (double*) malloc((size + 1) * sizeof(double)), w = (double*) malloc((size + 1) * sizeof(double));
@@ -33,8 +33,14 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 	v[size] = -q;
 	w[0] = -q;
 
-	v = thomas_algorithm(v, -q, (1.0 + 2.0 * q), -q);
-	w = thomas_algorithm(w, -q, (1.0 + 2.0 * q), -q);
+	if (!lapacke) {
+		v = thomas_algorithm(v, -q, (1.0 + 2.0 * q), -q);
+		w = thomas_algorithm(w, -q, (1.0 + 2.0 * q), -q);
+	} else {
+		create_a_matrix();
+		solve_with_lapacke(a_matrix, v);
+		solve_with_lapacke(a_matrix, w);
+	}
 
 	double ** sub_matrices = alloc2d(NUMBER_TIME_STEPS - 1, size + 1);
 
@@ -55,14 +61,18 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 		r = build_r(mpi_manager, previous_step);
 
 		// use the r vector to calculate the current time step solution with the thomas algorithm
-		y = thomas_algorithm(r, -q, (1.0 + 2.0 * q), -q);
+		if (!lapacke) {
+			r = thomas_algorithm(r, -q, (1.0 + 2.0 * q), -q);
+		} else {
+			solve_with_lapacke(a_matrix, r);
+		}
 
-		x = exchange_data(mpi_manager, y[0], y[size]);
+		x = exchange_data(mpi_manager, r[0], r[size]);
 
 		if (x != NULL) {
-			current_step = spikes_algorithm(mpi_manager, y, x);
+			current_step = spikes_algorithm(mpi_manager, r, x);
 		} else {
-			current_step = y;
+			current_step = r;
 		}
 
 		previous_step = current_step;
@@ -77,8 +87,8 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 
 	mpi_manager->add_sub_matrix(index, sub_matrices);
 
-	free(r); free(x); free(y);
-	free(v); free(w);
+	/*free(r); free(x);
+	free(v); free(w);*/
 }
 
 /*
@@ -134,6 +144,30 @@ void Implicit::calculate_spikes(MPImanager * mpi_manager) {
 		}
 	}
 
+}
+
+void Implicit::create_a_matrix() {
+	a_matrix = (double *) malloc((size + 2) * (size + 2) * sizeof(double));
+	double a = -q, b = (1.0 + 2.0 * q), c = -q;
+
+	std::fill_n(&a_matrix[0], (size + 1) * (size + 1), 0.0);
+	for (size_t i = 0; i <= size; i++) {
+		if (i != size) {
+			a_matrix[i * (size + 1) + i + 1] = c;
+		}
+		if (i != 0) {
+			a_matrix[i * (size + 1) + i - 1] = a;
+		}
+		a_matrix[i * (size + 1) + i] = b;
+	}
+}
+
+void Implicit::solve_with_lapacke(double * matrix, double * &b) {
+	int n, nrhs, lda, ldb, info = 0, *ipiv;
+	n = size + 1; nrhs = 1;
+	ipiv = (int *)malloc(n * sizeof(lapack_int));
+	lda = n, ldb = n;
+	dgesv_(&n, &nrhs, a_matrix, &lda, ipiv, b, &ldb, &info);
 }
 
 double * Implicit::spikes_algorithm(MPImanager *mpi_manager, double * y, double * x) {
