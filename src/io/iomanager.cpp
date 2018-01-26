@@ -99,7 +99,7 @@ void IOManager::plot_times(std::string output_name, Method * analytical, std::ve
 	std::string lapacke_str = methods[1]->is_lapacke() ? "_lapacke" : "";
 	std::string deltat_string = double_to_string(3, methods[0]->get_deltat());
 
-	gp << "set tics scale 0; set border 3; set style line 1 lc rgb '#FFA500' lt 1 lw 2 pt 7 pi -1 ps 1.5; set clip two; set ylabel \"time [s]\";set xlabel \"\"; set term png; set xtics (\"Analytical\" 0, \"Laasonen\" 1, \"Crank Nicholson\" 2, \"FTCS\" 3)\n";
+	gp << "set tics scale 0; set border 3; set style line 1 lc rgb '#0060ad' lt 1 lw 2 pt 7 pi -1 ps 1.5; set clip two; set ylabel \"time [s]\";set xlabel \"\"; set term png; set xtics (\"Analytical\" 0, \"Laasonen\" 1, \"Crank Nicholson\" 2, \"FTCS\" 3)\n";
 	gp << "set output \"" << output_path << "/timesdt=" << deltat_string << "p=" << number_processes << lapacke_str << ".png\";\n";
 	gp << "plot" << gp.file1d(times) << " notitle with linespoint ls 1" << std::endl;
 }

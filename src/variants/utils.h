@@ -35,6 +35,6 @@ const size_t SOLUTIONS_NR = 4;
 
 double ***alloc3d(int l, int m, int n);
 double **alloc2d(int rows, int cols);
-double * gaussian_elimination(double ** a, double * b, size_t n);
+double * gaussian_elimination(double ** &a, double * &b, size_t n);
 
 #endif

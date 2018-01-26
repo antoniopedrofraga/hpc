@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.11.3)  26 JAN 2018 01:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.11.3)  26 JAN 2018 12:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1757,13 +1757,13 @@ t x 361.35pt>
 File: times.png Graphic file (type png)
  <use times.png>
 Package pdftex.def Info: times.png used on input line 419.
-(pdftex.def)             Requested size: 181.18784pt x 135.88637pt.
+(pdftex.def)             Requested size: 226.48395pt x 169.86209pt.
 
 <speedup.png, id=63, 481.8pt x 361.35pt>
 File: speedup.png Graphic file (type png)
  <use speedup.png>
 Package pdftex.def Info: speedup.png used on input line 424.
-(pdftex.def)             Requested size: 181.18784pt x 135.88637pt.
+(pdftex.def)             Requested size: 226.48395pt x 169.86209pt.
  [12 <./times.png> <./speedup.png>] [13]
 LaTeX Font Info:    Try loading font information for T1+cmtt on input line 448.
 
@@ -1800,7 +1800,7 @@ exmf-dist/fonts/type1/public/fourier/fourier-mlit.pfb></usr/share/texlive/texmf
 fonts/type1/adobe/utopia/putb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 adobe/utopia/putr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/adobe/utopia
 /putri8a.pfb>
-Output written on main.pdf (15 pages, 245032 bytes).
+Output written on main.pdf (15 pages, 245013 bytes).
 PDF statistics:
  142 PDF objects out of 1000 (max. 8388607)
  62 compressed objects within 1 object stream

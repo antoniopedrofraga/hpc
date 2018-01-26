@@ -65,7 +65,7 @@ void forward_elim(double ** &mat, size_t n) {
 }
 
 
-double * gaussian_elimination(double ** a, double * b, size_t n) {
+double * gaussian_elimination(double ** &a, double * &b, size_t n) {
     double ** mat = alloc2d(n, n + 1);
 
     for (size_t i = 0; i < n; i++) {
@@ -86,8 +86,6 @@ double * gaussian_elimination(double ** a, double * b, size_t n) {
 
         x[i] = x[i] / mat[i][i];
     }
-
-    free(mat);
 
     return x;
 }

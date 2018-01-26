@@ -1,5 +1,13 @@
 #include "implicit.h"
 
+//(trans, n, nrhs, dl, d, du, du2, ipiv, b, ldb, info);
+extern "C" {
+     void dgttrs_(char * trans, int *n, int *nrhs,  double *dl, double *d,  
+           double *du, double *du2, int *ipivot, double *b, int *ldb, int *info) ;
+     void dgttrf_(int * n, double *low, double *diag,  double  *up1,
+               double *up2, int *ipivot, int *info);
+}
+
 // CONSTRUCTORS
 /*=
  *Default constructor, method to solve a problem with implicit procedures
@@ -37,9 +45,8 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 		v = thomas_algorithm(v, -q, (1.0 + 2.0 * q), -q);
 		w = thomas_algorithm(w, -q, (1.0 + 2.0 * q), -q);
 	} else {
-		create_a_matrix();
-		solve_with_lapacke(a_matrix, v);
-		solve_with_lapacke(a_matrix, w);
+		solve_with_lapacke(v);
+		solve_with_lapacke(w);
 	}
 
 	double ** sub_matrices = alloc2d(NUMBER_TIME_STEPS - 1, size + 1);
@@ -60,11 +67,11 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 		// build r vector
 		r = build_r(mpi_manager, previous_step);
 
-		// use the r vector to calculate the current time step solution with the thomas algorithm
+		// use the r vector to calculate the current time step solution
 		if (!lapacke) {
 			r = thomas_algorithm(r, -q, (1.0 + 2.0 * q), -q);
 		} else {
-			solve_with_lapacke(a_matrix, r);
+			solve_with_lapacke(r);
 		}
 
 		x = exchange_data(mpi_manager, r[0], r[size]);
@@ -146,34 +153,30 @@ void Implicit::calculate_spikes(MPImanager * mpi_manager) {
 
 }
 
-void Implicit::create_a_matrix() {
-	a_matrix = (double *) malloc((size + 2) * (size + 2) * sizeof(double));
-	double a = -q, b = (1.0 + 2.0 * q), c = -q;
-
-	std::fill_n(&a_matrix[0], (size + 1) * (size + 1), 0.0);
-	for (size_t i = 0; i <= size; i++) {
-		if (i != size) {
-			a_matrix[i * (size + 1) + i + 1] = c;
-		}
-		if (i != 0) {
-			a_matrix[i * (size + 1) + i - 1] = a;
-		}
-		a_matrix[i * (size + 1) + i] = b;
-	}
-}
-
-void Implicit::solve_with_lapacke(double * matrix, double * &b) {
-	int n, nrhs, lda, ldb, info = 0, *ipiv;
+void Implicit::solve_with_lapacke(double * &b) {
+	int n, nrhs, ldb, info = 0;
 	n = size + 1; nrhs = 1;
-	ipiv = (int *)malloc(n * sizeof(lapack_int));
-	lda = n, ldb = n;
-	dgesv_(&n, &nrhs, a_matrix, &lda, ipiv, b, &ldb, &info);
+	ldb = n;
+
+	int ipiv1[n], ipiv2[n]; double du2[n], dl[n], d[n], du[n];
+	fill_n(&dl[0], n, -q); fill_n(&du[0], n, -q); fill_n(&d[0], n, (1.0 + 2.0 * q));
+
+	char trans = 'N';
+
+	dgttrf_(&n, dl, d, du, du2, ipiv1, &info);
+	dgttrs_(&trans, &n, &nrhs, dl, d, du, du2, ipiv1, &b[0], &ldb, &info);
+
+	if (info != 0) {
+		cout << "LAPACKE: something wrong happened." << endl;
+	}
+
 }
 
 double * Implicit::spikes_algorithm(MPImanager *mpi_manager, double * y, double * x) {
 	double * current_step = (double *) malloc(sizeof(double) * (size + 1));
 	size_t y_size = mpi_manager->get_number_processes() * 2;
 	size_t s_index = mpi_manager->get_rank() * 2;
+
 
 	for (size_t i = 0; i <= size; i++) {
 		if (mpi_manager->is_root()) {

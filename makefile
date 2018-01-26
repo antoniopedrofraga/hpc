@@ -1,5 +1,5 @@
 all: ./src/*.cpp
-	mpicxx -std=c++11 -lstdc++ -lpthread -W ./src/*.cpp ./src/*/*.cpp ./src/*/*/*.cpp -o ./bin/assignment -lboost_iostreams -lboost_system -lboost_filesystem -llapack
+	mpicxx -std=c++11 -lstdc++ -lpthread -W ./src/*.cpp ./src/*/*.cpp ./src/*/*/*.cpp -o ./bin/assignment -lboost_iostreams -lboost_system -lboost_filesystem -llapack -lblas -lgfortran -lm
 install:
 	sudo apt-get install libboost-iostreams-dev libboost-system-dev libboost-filesystem-dev
 compile:
@@ -11,7 +11,7 @@ run:
 	done;
 memcheck:
 	make all
-	mpiexec -np 4 valgrind --tool=memcheck --leak-check=full ./bin/assignment
+	mpiexec -np 1 valgrind --tool=memcheck --leak-check=full ./bin/assignment
 export:
 	if [ -d ../outputs ]; then \
 	  	make clean; \

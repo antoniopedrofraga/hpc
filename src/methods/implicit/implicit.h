@@ -3,7 +3,6 @@
 
 #include "../method.h" // declare that the Method class exists (inheritance)
 #include "../../mpi/mpimanager.h"
-#include <lapacke.h>
 
 
 /**
@@ -33,11 +32,10 @@ private:
 	void calculate_spikes(MPImanager * mpi_manager);
 	double * spikes_algorithm(MPImanager * mpi_manager, double * y, double * x);
 	double * exchange_data(MPImanager *mpi_manager, double &head, double &tail);
-	void create_a_matrix();
-	void solve_with_lapacke(double * matrix, double * &b);
+	void solve_with_lapacke(double * &b);
 	double ** spike_matrix;
 	double * v, * w;
-	double * a_matrix;
+	double ** a_matrix;
 	int * receive_pos, * receive_count;
 protected:
 	// PROTECTED METHODS
