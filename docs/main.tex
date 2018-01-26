@@ -426,16 +426,26 @@ X_{P - 1} = Y_{P - 1} - W X_{P - 2}^b
 \end{minipage}
 \end{figure}
 
-\par However, while observing \textbf{Figure 10}, it could be seen that the \textbf{speedup} value of the \textbf{Forward in Time, Central in Space} scheme is far from its optimal value. In fact this value is significantly low. A larger \textbf{speedup} value would be seen while computing a larger grid. In such small system, the bottleneck of communications is high, and therefore one can not obtain big improvements. An experiment with a system of \textbf{thousands} of elements in each time step would contribute to a higher \textbf{speedup}.
+\par However, while observing \textbf{Figure 10}, it could be seen that the \textbf{speedup} value of the \textbf{Forward in Time, Central in Space} scheme is far from its optimal value. In fact this value is significantly low. A larger \textbf{speedup} value would be seen while computing a larger grid. In such small system, the bottleneck of communications is high, and therefore one can not obtain big improvements. An experiment with a system of \textbf{thousands} of elements in each time step would contribute to a later perceived bottleneck. Clarifying, the bottleneck would only be visible with a higher number of processes.
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=.65\linewidth]{lapack_times.png}
+  \captionof{figure}{Comparison of execution times with one process.}
+\end{figure}
+
+\par The implemented \textbf{tridiagonal} solver was compared to the \textbf{Lapack} library \textbf{tridiagonal} solver. While observing \textbf{Figure 11}, it can be seen that the execution time of the implemented solver was slower than the Lapack one. The \textbf{Thomas algorithm} has a \textbf{linear} time complexity, making it one of the fastest algorithms in sequential code. The significantly slow time obtained by the Lapack implementation may have to do with the architecture where the code is running. It can be possibly explained with \textbf{memory management} matters as well. It's also possible that these methods would behave better with a larger grid.
 
 \pagebreak
 \section*{Conclusions}
 \addcontentsline{toc}{section}{Conclusions}
 
-\par The obtained results could support the theoretical concepts. Unstable methods demonstrated an error growth through the time progress. The \textbf{Forward in Time, Central in Space} explicit scheme was stable with the given initial conditions, therefore it could support a good solution for the explicit stable scheme, \textbf{DuFort-Frankel}. As referred, the solution of the DuFort-Frankel method strongly depends on the first iteration solution.
-\par It could be observed that smaller steps can lead to a time expensive solution, whereas larger steps lead to an error increase. Stable methods could give a good solution with the right time and space steps, but by analysing the second norm value, it was concluded that the Crank-Nicholson method is more accurate. This is due to the fact that this method has a better approximation order.
-\par It is important to have a balance between the two problems (time and approximation), a method should be computed in an acceptable time, and still obtain a good result. In realistic scenarios the problem solution is not known, therefore error estimates are impractical. The used step size should be small as possible, as long as the solution is not dominated with round-off errors. The solution must be obtained with a number of steps that one has time to compute. 
- 
+\par In conclusion, computational power may not be the more important factor when dealing with High Performance Computing.
+\par It was seen that memory plays an important role on this area as well. In order to build an efficient solver, one must take attention of \textbf{how} to deal with the several \textbf{data structures} used to obtain a solution. 
+\par The overhead of communicating among processes is often a major bottleneck that one must minimize as much as possible. Is also known that a solution with independent data can be more efficient than systems which rely on information spread across the solution. Whenever the number of communications between processes is significantly high, it is expected to obtain less efficient solvers.  
+\par The use of distributed systems becomes advantageous when dealing with large problems. Problems that often require a high number of calculations within a process. Those calculations can often be distributed by workers in order to minimize execution times. Bigger solution tend to minimize the communication bottleneck as well. Whenever the ratio between number of communications and work load per process is minimized, one can expect a better performance.
+\par Like referred before, building a system requires a "near to optimal" level of synchronization. It is implied to think \textbf{when}, \textbf{how} and \textbf{what} to exchange between workers. 
+
 
 %-------------------------------------------------------------------------------
 % REFERENCES
@@ -459,9 +469,6 @@ Eric Polizzi, Ahmed H. Sameh, February 2016, \textit{A parallel hybrid banded sy
 
 \end{thebibliography}
 \newpage
-
-\section*{Appendices}
-\addcontentsline{toc}{section}{Appendices}
 
 
 
