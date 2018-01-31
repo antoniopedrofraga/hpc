@@ -140,19 +140,15 @@ Three numerical schemes were applied to compute a solution for a parabolic parti
 \centering
 \def\arraystretch{1.5}
 \begin{tabular}{ll}
-Diffusivity & $D$\\
-First derivative in time & $\frac{\partial f}{\partial t}$\\
-First derivative in space & $\frac{\partial f}{\partial x}$\\
-Time grid position & $n$\\
-Space grid position & $i$\\
-Function at time and space grid position & $f_i^n$\\
+Speedup & $ S $ \\
+Speedup with \textbf{p} processes & $ S_p $ \\
+Forward in Time Central in Space scheme & FTCS \\
+Sequential execution time & $T$ \\
+Execution time in parallel with \textbf{p} processes & $T_p$ \\
+Lower index of space step computed by a process & $lower$ \\
+Upper index of space step computed by a process & $upper$ \\
 Time step & $\Delta t$\\
 Space step & $\Delta x$\\
-Time value & $t$\\
-Space value & $x$\\
-Analytical function at specific space and time values& $f(x, t)$\\
-Initial Temperature& $T_{in}$\\
-Surface Temperature& $T_{sur}$\\
 \end{tabular}
 \end{table}
 
@@ -442,7 +438,7 @@ X_{P - 1} = Y_{P - 1} - W X_{P - 2}^b
 
 \par In conclusion, computational power may not be the more important factor when dealing with High Performance Computing.
 \par It was seen that memory plays an important role on this area as well. In order to build an efficient solver, one must take attention of \textbf{how} to deal with the several \textbf{data structures} used to obtain a solution. 
-\par The overhead of communicating among processes is often a major bottleneck that one must minimize as much as possible. Is also known that a solution with independent data can be more efficient than systems which rely on information spread across the solution. Whenever the number of communications between processes is significantly high, it is expected to obtain less efficient solvers.  
+\par The overhead of communication among processes is often a major bottleneck that one must minimize as much as possible. Is also known that a solution with independent data can be more efficient than systems which rely on information spread across the solution. Whenever the number of communications between processes is significantly high, it is expected to obtain less efficient solvers.  
 \par The use of distributed systems becomes advantageous when dealing with large problems. Problems that often require a high number of calculations within a process. Those calculations can often be distributed by workers in order to minimize execution times. Bigger solution tend to minimize the communication bottleneck as well. Whenever the ratio between number of communications and work load per process is minimized, one can expect a better performance.
 \par Like referred before, building a system requires a "near to optimal" level of synchronization. It is implied to think \textbf{when}, \textbf{how} and \textbf{what} to exchange between workers. 
 

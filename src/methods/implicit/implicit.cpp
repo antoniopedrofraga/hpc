@@ -158,7 +158,7 @@ void Implicit::solve_with_lapacke(double * &b) {
 	n = size + 1; nrhs = 1;
 	ldb = n;
 
-	int ipiv1[n], ipiv2[n]; double du2[n], dl[n], d[n], du[n];
+	int ipiv1[n]; double du2[n], dl[n], d[n], du[n];
 	fill_n(&dl[0], n, -q); fill_n(&du[0], n, -q); fill_n(&d[0], n, (1.0 + 2.0 * q));
 
 	char trans = 'N';
