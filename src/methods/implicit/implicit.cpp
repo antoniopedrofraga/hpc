@@ -1,6 +1,5 @@
 #include "implicit.h"
 
-//(trans, n, nrhs, dl, d, du, du2, ipiv, b, ldb, info);
 extern "C" {
      void dgttrs_(char * trans, int *n, int *nrhs,  double *dl, double *d,  
            double *du, double *du2, int *ipivot, double *b, int *ldb, int *info) ;
@@ -93,9 +92,6 @@ void Implicit::compute_solution(MPImanager *mpi_manager, size_t index) {
 	}
 
 	mpi_manager->add_sub_matrix(index, sub_matrices);
-
-	/*free(r); free(x);
-	free(v); free(w);*/
 }
 
 /*
