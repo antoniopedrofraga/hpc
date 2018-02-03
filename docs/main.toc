@@ -8,3 +8,6 @@
 \contentsline {subsection}{Implicit Schemes}{8}
 \contentsline {section}{Results \& Discussion}{11}
 \contentsline {section}{Conclusions}{14}
+\contentsline {section}{Appendices}{16}
+\contentsline {subsection}{Class Diagram}{16}
+\contentsline {subsection}{Source Code}{17}

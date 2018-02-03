@@ -82,7 +82,7 @@
 
 \begin{document}
 
-\title{ \fontsize{40}{90} \textsc{High Performance Computing}
+\title{ \fontsize{40}{90} \textsc{High Performance Technical Computing}
 		\\ [2.0cm]
 		\HRule{0.5pt} \\
 		\LARGE \textbf{Heat Conduction Equation}
@@ -214,7 +214,7 @@ It was seen in the previous work\cite{fraga} that these schemes can be written i
 \end{center}
 \hfill
 \par Defining these values as integers will avoid any kind of \textbf{floating point} values.
-\par We can not, however, define these rules if it happens to have more available processes than space steps. In this case, only the number of processes corresponding to the number of space steps can be used.
+\par We can not, however, define these rules if it happens to have more available processes than space steps. In this case, only the number of processes corresponding to the number of space steps can be used. Therefore, it was created a new \textbf{communication world} if this condition was met, using only the necessary processes to compute the solution.
 \par Notice that the process with the $\textbf{rank} = 0$, computes the first window of values, whereas the process with $\textbf{rank} = 1$ computes the second window of values. The same idea is replicated to the next processes and windows.
 
 \subsection*{Explicit Scheme}
@@ -430,7 +430,7 @@ X_{P - 1} = Y_{P - 1} - W X_{P - 2}^b
   \captionof{figure}{Comparison of execution times with one process.}
 \end{figure}
 
-\par The implemented \textbf{tridiagonal} solver was compared to the \textbf{Lapack} library \textbf{tridiagonal} solver. While observing \textbf{Figure 11}, it can be seen that the execution time of the implemented solver was slower than the Lapack one. The \textbf{Thomas algorithm} has a \textbf{linear} time complexity, making it one of the fastest algorithms in sequential code. The significantly slow time obtained by the Lapack implementation may have to do with the architecture where the code is running. It can be possibly explained with \textbf{memory management} matters as well. It's also possible that these methods would behave better with a larger grid.
+\par The implemented \textbf{tridiagonal} solver was compared to the \textbf{Lapack} library \textbf{tridiagonal} solver. While observing \textbf{Figure 11}, it can be seen that the execution time of the implemented solver was faster than the Lapack one. The \textbf{Thomas algorithm} has a \textbf{linear} time complexity, making it one of the fastest algorithms in sequential code. The significantly slow time obtained by the Lapack implementation may have to do with the architecture where the code is running. It can be possibly explained with \textbf{memory management} matters as well. It's also possible that these methods would behave better with a larger grid.
 
 \pagebreak
 \section*{Conclusions}
@@ -465,6 +465,98 @@ Eric Polizzi, Ahmed H. Sameh, February 2016, \textit{A parallel hybrid banded sy
 
 \end{thebibliography}
 \newpage
+
+\section*{Appendices}
+\addcontentsline{toc}{section}{Appendices}
+
+\subsection*{Class Diagram}
+\addcontentsline{toc}{subsection}{Class Diagram}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=1\linewidth]{classdiagram.png}
+\end{figure}
+
+\subsection*{Source Code}
+\addcontentsline{toc}{subsection}{Source Code}
+
+\subsubsection*{main.cpp}
+\lstinputlisting[language=C++]{./src/main.cpp}
+
+\subsubsection*{mpi/mpimanager.h}
+\lstinputlisting[language=C++]{./src/mpi/mpimanager.h}
+
+\subsubsection*{mpi/mpimanager.cpp}
+\lstinputlisting[language=C++]{./src/mpi/mpimanager.cpp}
+
+\subsubsection*{variants/problem.h}
+\lstinputlisting[language=C++]{./src/variants/problem.h}
+
+\subsubsection*{variants/problem.cpp}
+\lstinputlisting[language=C++]{./src/variants/problem.cpp}
+
+\subsubsection*{variants/utils.h}
+\lstinputlisting[language=C++]{./src/variants/utils.h}
+
+\subsubsection*{methods/analytical.h}
+\lstinputlisting[language=C++]{./src/methods/analytical.h}
+
+\subsubsection*{methods/analytical.cpp}
+\lstinputlisting[language=C++]{./src/methods/analytical.cpp}
+
+\subsubsection*{methods/method.h}
+\lstinputlisting[language=C++]{./src/methods/method.h}
+
+\subsubsection*{methods/method.cpp}
+\lstinputlisting[language=C++]{./src/methods/method.cpp}
+
+\subsubsection*{methods/explicit/explicit.h}
+\lstinputlisting[language=C++]{./src/methods/explicit/explicit.h}
+
+\subsubsection*{methods/explicit/explicit.cpp}
+\lstinputlisting[language=C++]{./src/methods/explicit/explicit.cpp}
+
+\subsubsection*{methods/explicit/forward\_t\_central\_s.h}
+\lstinputlisting[language=C++]{./src/methods/explicit/forward_t_central_s.h}
+
+\subsubsection*{methods/explicit/forward\_t\_central\_s.cpp}
+\lstinputlisting[language=C++]{./src/methods/explicit/forward_t_central_s.cpp}
+
+\subsubsection*{methods/implicit/implicit.h}
+\lstinputlisting[language=C++]{./src/methods/implicit/implicit.h}
+
+\subsubsection*{methods/implicit/implicit.cpp}
+\lstinputlisting[language=C++]{./src/methods/implicit/implicit.cpp}
+
+\subsubsection*{methods/implicit/crank\_nicolson.h}
+\lstinputlisting[language=C++]{./src/methods/implicit/crank_nicolson.h}
+
+\subsubsection*{methods/implicit/crank\_nicolson.cpp}
+\lstinputlisting[language=C++]{./src/methods/implicit/crank_nicolson.cpp}
+
+\subsubsection*{methods/implicit/laasonen.h}
+\lstinputlisting[language=C++]{./src/methods/implicit/laasonen.h}
+
+\subsubsection*{methods/implicit/laasonen.cpp}
+\lstinputlisting[language=C++]{./src/methods/implicit/laasonen.cpp}
+
+\subsubsection*{io/iomanager.h}
+\lstinputlisting[language=C++]{./src/io/iomanager.h}
+
+\subsubsection*{io/iomanager.cpp}
+\lstinputlisting[language=C++]{./src/io/iomanager.cpp}
+
+\subsubsection*{grid/vector.h}
+\lstinputlisting[language=C++]{./src/grid/vector.h}
+
+\subsubsection*{grid/vector.cpp}
+\lstinputlisting[language=C++]{./src/grid/vector.cpp}
+
+\subsubsection*{grid/matrix.h}
+\lstinputlisting[language=C++]{./src/grid/matrix.h}
+
+\subsubsection*{grid/matrix.cpp}
+\lstinputlisting[language=C++]{./src/grid/matrix.cpp}
 
 
 
